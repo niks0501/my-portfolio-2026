@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 #opencode
 .opencode
+/opencode.json
+AGENTS.md
+.planning
