@@ -1,17 +1,33 @@
 ---
-
+import Hero from '../components/Hero.astro';
+import ProjectsSection from '../components/ProjectsSection.astro';
+import AboutSection from '../components/AboutSection.astro';
+import ServicesSection from '../components/ServicesSection.astro';
+import ContactFooter from '../components/ContactFooter.astro';
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Nikko Causapin — Full-Stack Developer</title>
+    <meta
+      name="description"
+      content="Full-stack developer portfolio showcasing web applications with clean UI and analytics-driven features."
+    />
+  </head>
+  <body>
+    <main>
+      <Hero />
+      <ProjectsSection />
+      <AboutSection />
+      <div class="mt-8 [&>section]:pt-0">
+        <ServicesSection />
+      </div>
+      <ContactFooter />
+    </main>
+  </body>
 </html>
