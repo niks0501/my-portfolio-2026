@@ -26,7 +26,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. User can view exactly three project cards, each showing title, summary, tech stack, sample images, and live demo + GitHub links.
   3. User can read a concise About summary and see a Services list that clarifies offerings.
   4. User can access contact and footer links, including a mailto CTA, visible email address, GitHub/LinkedIn, and a resume download.
-**Plans**: TBD
+**Plans**: 4 plans in 2 waves
+
+Plans:
+- [ ] 01-01-PLAN.md — Hero section: headline, subline, email CTA, View Projects button per D-01/D-02
+- [ ] 01-02-PLAN.md — Project cards: ProjectCard + ProjectsSection with locked data per D-03/D-04/D-05/D-06
+- [ ] 01-03-PLAN.md — About + Services sections with locked copy per D-07/D-08
+- [ ] 01-04-PLAN.md — Contact/Footer + page assembly composing all 6 sections
 **UI hint**: yes
 
 ### Phase 2: Quality & Performance
