@@ -1,0 +1,85 @@
+---
+import ProjectCard from './ProjectCard.astro';
+
+const projects = [
+  {
+    title: 'Pig-Sikap',
+    summary:
+      'A web-based system that helps pig farmers manage inventory, health records, expenses, sales, reports, and profitability insights.',
+    highlights: [
+      'Pig inventory and cycle management',
+      'Health records and health task tracking',
+      'Profitability and profit-sharing reports',
+    ],
+    tags: [
+      'Laravel',
+      'Vue',
+      'Tailwind',
+      'MySQL',
+      'Analytics',
+      'Livestock Management',
+    ],
+    images: [
+      '/images/projects/pig-sikap/dashboard.png',
+      '/images/projects/pig-sikap/inventory.png',
+      '/images/projects/pig-sikap/profitability.png',
+    ],
+    githubUrl: 'https://github.com/niks0501/pig-sikap',
+    liveDemoUrl: undefined as string | undefined,
+  },
+  {
+    title: 'Dirty2Data',
+    summary:
+      'A Laravel + Inertia + React data cleaning and analytics system for uploading, profiling, cleaning, analyzing, and visualizing datasets.',
+    highlights: [
+      'Dataset upload and profiling',
+      'Cleaning workflow with recommendations and undo',
+      'Analytics dashboards, visualizations, and insights',
+    ],
+    tags: [
+      'Laravel',
+      'Inertia',
+      'React',
+      'TypeScript',
+      'Tailwind',
+      'Data Analytics',
+    ],
+    images: [
+      '/images/projects/dirty2data/dashboard.png',
+      '/images/projects/dirty2data/dataset-cleaning.png',
+      '/images/projects/dirty2data/visualization.png',
+    ],
+    githubUrl: 'https://github.com/niks0501/dirty2data',
+    liveDemoUrl: undefined as string | undefined,
+  },
+  {
+    title: 'LumbanganSystem',
+    summary:
+      'A web-based Barangay Management Information System for resident records, document requests, approvals, and barangay service workflows.',
+    highlights: [
+      'Document requests with status tracking',
+      'Document types/templates and proof uploads',
+      'Admin dashboard and statistics',
+    ],
+    tags: ['PHP', 'MySQL', 'MVC', 'Bootstrap', 'Barangay System'],
+    images: [
+      '/images/projects/lumbangan-system/dashboard.png',
+      '/images/projects/lumbangan-system/document-requests.png',
+      '/images/projects/lumbangan-system/document-types.png',
+    ],
+    githubUrl: 'https://github.com/alfredD-12/LumbanganSystem',
+    liveDemoUrl: undefined as string | undefined,
+  },
+];
+---
+
+<section id="projects">
+  <div class="max-w-2xl lg:max-w-5xl mx-auto px-4 py-16">
+    <h2 class="text-xl font-semibold leading-tight text-foreground mb-8">
+      Projects
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {projects.map((project) => <ProjectCard {...project} />)}
+    </div>
+  </div>
+</section>
