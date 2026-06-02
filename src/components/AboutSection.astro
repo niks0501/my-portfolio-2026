@@ -1,39 +1,329 @@
 ---
-const skills = [
-  'Laravel', 'Vue', 'React', 'TypeScript', 'PHP',
-  'MySQL', 'Tailwind CSS', 'Astro', 'Git', 'Data Analytics',
+import { Icon } from 'astro-icon/components';
+
+const featuredProjects = [
+  {
+    title: 'Pig-Sikap',
+    summary:
+      'Livestock monitoring and profitability analytics for small-to-mid scale swine operations.',
+    tags: [
+      { label: 'Laravel', icon: 'tabler:brand-laravel' },
+      { label: 'Vue', icon: 'tabler:brand-vue' },
+      { label: 'MySQL', icon: 'tabler:database' },
+    ],
+  },
+  {
+    title: 'Dirty2Data',
+    summary:
+      'Data cleaning and analytics platform for messy CSVs — profile, clean, and visualize.',
+    tags: [
+      { label: 'Laravel', icon: 'tabler:brand-laravel' },
+      { label: 'React', icon: 'tabler:brand-react' },
+      { label: 'Inertia', icon: 'tabler:brand-inertia' },
+    ],
+  },
+  {
+    title: 'LumbanganSystem',
+    summary:
+      'Barangay Management Information System for resident records, document requests, and approvals.',
+    tags: [
+      { label: 'PHP', icon: 'tabler:brand-php' },
+      { label: 'MySQL', icon: 'tabler:database' },
+      { label: 'Bootstrap', icon: 'tabler:brand-bootstrap' },
+    ],
+  },
+];
+
+const techGroups = [
+  {
+    label: 'Frontend',
+    icon: 'tabler:layout',
+    items: ['Vue', 'React', 'Tailwind CSS', 'Astro'],
+  },
+  {
+    label: 'Backend',
+    icon: 'tabler:server-2',
+    items: ['Laravel', 'PHP', 'Java', 'JavaFX'],
+  },
+  {
+    label: 'Data & Analytics',
+    icon: 'tabler:chart-dots',
+    items: ['MySQL', 'Power BI', 'KNIME'],
+  },
+  {
+    label: 'Tools',
+    icon: 'tabler:tools',
+    items: ['Git', 'GitHub', 'Networking'],
+  },
 ];
 ---
 
 <section id="about" class="scroll-reveal">
   <div class="max-w-4xl lg:max-w-7xl mx-auto px-6 py-16">
-    <h2 class="text-2xl font-semibold leading-tight text-foreground mb-8">
-      About
-    </h2>
-    <div class="flex flex-col md:flex-row gap-10 items-start">
-      <div class="shrink-0">
-        <img
-          src="/images/profile.jpg"
-          alt="Nikko Causapin"
-          class="w-40 h-40 rounded-lg object-cover border border-border"
-          loading="lazy"
-        />
-      </div>
-      <div class="flex-1">
-        <p class="text-lg text-foreground leading-relaxed">
-          I'm a student developer focused on full-stack web development with clean UI implementation and analytics-driven features. I build practical web apps and internal tools that keep workflows simple and decisions clear.
-        </p>
-        <p class="text-lg text-muted-foreground leading-relaxed mt-4">
-          I enjoy working on projects that solve real problems — from livestock management systems to data cleaning pipelines. Every project is an opportunity to write cleaner code and ship something people actually use.
-        </p>
-        <div class="mt-6">
-          <p class="text-sm font-medium text-foreground mb-3">Technologies I work with</p>
-          <div class="flex flex-wrap gap-2">
-            {skills.map((skill) => (
-              <span class="text-sm bg-muted text-muted-foreground px-3 py-1.5 rounded-md">
-                {skill}
-              </span>
-            ))}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
+      <!-- Left rail: Quote + facts (sticky on desktop) -->
+      <aside class="lg:col-span-4 lg:sticky lg:top-24 lg:self-start">
+        <div class="flex flex-col">
+          <!-- Brand monogram + section anchor -->
+          <div class="flex items-center gap-3 mb-7">
+            <span
+              class="grid place-items-center w-12 h-12 rounded-lg bg-foreground text-background text-lg font-heading font-semibold tracking-tight"
+              aria-hidden="true"
+            >
+              NC
+            </span>
+            <div class="leading-tight">
+              <p
+                class="text-[10px] uppercase tracking-[0.18em] text-muted-foreground"
+              >
+                About
+              </p>
+              <p class="text-sm font-medium text-foreground mt-0.5">
+                Nikko Causapin
+              </p>
+            </div>
+          </div>
+
+          <!-- Pull quote -->
+          <blockquote class="border-l-2 border-primary pl-4">
+            <p
+              class="text-base font-heading font-medium text-foreground leading-snug italic text-balance"
+            >
+              "I build software that turns messy data into decisions people can
+              actually make."
+            </p>
+            <footer class="mt-3 text-xs text-muted-foreground not-italic">
+              — Nikko C.
+            </footer>
+          </blockquote>
+
+          <!-- At a glance -->
+          <div class="mt-8">
+            <p
+              class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-4"
+            >
+              At a glance
+            </p>
+            <dl class="space-y-4">
+              <div>
+                <dt class="text-xs text-muted-foreground mb-0.5">
+                  Projects shipped
+                </dt>
+                <dd
+                  class="text-xl font-heading font-semibold text-foreground tabular-nums"
+                >
+                  3+
+                </dd>
+              </div>
+              <div>
+                <dt class="text-xs text-muted-foreground mb-0.5">
+                  Specialization
+                </dt>
+                <dd
+                  class="text-sm font-heading font-semibold text-foreground leading-snug"
+                >
+                  BSIT — Business Analytics
+                </dd>
+              </div>
+              <div>
+                <dt class="text-xs text-muted-foreground mb-0.5">
+                  Availability
+                </dt>
+                <dd
+                  class="text-sm font-heading font-semibold text-foreground leading-snug"
+                >
+                  PH · GMT+8 · Remote
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          <!-- CTAs -->
+          <div class="flex flex-col gap-2 w-full mt-8">
+            <a
+              href="#projects"
+              class="inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground px-4 py-2.5 rounded-md text-sm font-medium hover:brightness-90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-[filter] cursor-pointer"
+            >
+              View projects
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+            <a
+              href="mailto:nikkocausapin61@gmail.com"
+              class="inline-flex items-center justify-center gap-1.5 border border-border text-foreground px-4 py-2.5 rounded-md text-sm font-medium hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors cursor-pointer"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+              </svg>
+              Email me
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right column: Narrative -->
+      <div class="lg:col-span-8">
+        <!-- Section eyebrow + positioning line -->
+        <div>
+          <p
+            class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-3"
+          >
+            About
+          </p>
+          <h3
+            class="text-3xl lg:text-4xl font-semibold leading-tight text-foreground text-balance"
+          >
+            Software developer building business systems, analytics platforms,
+            and data-driven applications.
+          </h3>
+        </div>
+
+        <!-- 01 — Short Introduction -->
+        <div class="mt-10">
+          <p
+            class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-3"
+          >
+            01 — Introduction
+          </p>
+          <p class="text-lg text-foreground leading-relaxed">
+            I'm Nikko Causapin, a BSIT student specializing in Business
+            Analytics and software development. I build web and desktop
+            applications that solve real-world problems through automation, data
+            management, and analytics. My interests include full-stack
+            development, data-driven systems, and AI-powered applications.
+          </p>
+        </div>
+
+        <!-- 02 — What I Do -->
+        <div class="mt-10">
+          <p
+            class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-3"
+          >
+            02 — What I do
+          </p>
+          <p class="text-base text-muted-foreground leading-relaxed">
+            I enjoy developing management systems, analytics dashboards, and
+            business applications. My projects focus on improving workflows,
+            organizing data, and helping organizations make better decisions
+            through technology.
+          </p>
+        </div>
+
+        <!-- 03 — Featured Experience -->
+        <div class="mt-12">
+          <div class="flex items-baseline justify-between mb-5">
+            <p
+              class="text-xs font-medium uppercase tracking-[0.18em] text-primary"
+            >
+              03 — Featured experience
+            </p>
+            <a
+              href="#projects"
+              class="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              See all →
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 stagger-children">
+            {
+              featuredProjects.map((project) => (
+                <a
+                  href="#projects"
+                  class="group bg-card border border-border rounded-lg p-4 flex flex-col transition-all duration-200 hover:border-primary/30 hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer"
+                >
+                  <h4 class="font-heading font-semibold text-foreground text-base leading-snug group-hover:text-primary transition-colors">
+                    {project.title}
+                  </h4>
+                  <p class="text-sm text-muted-foreground mt-2 leading-relaxed flex-1">
+                    {project.summary}
+                  </p>
+                  <div class="flex flex-wrap gap-1.5 mt-3">
+                    {project.tags.map((tag) => (
+                      <span class="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-sm inline-flex items-center gap-1 font-medium">
+                        <Icon name={tag.icon} class="w-3 h-3" />
+                        {tag.label}
+                      </span>
+                    ))}
+                  </div>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+
+        <!-- 04 — Technologies -->
+        <div class="mt-12">
+          <p
+            class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-5"
+          >
+            04 — Technologies
+          </p>
+          <div class="space-y-3">
+            {
+              techGroups.map((group) => (
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                  <div class="flex items-center gap-1.5 text-sm font-medium text-foreground sm:w-44 shrink-0">
+                    <Icon
+                      name={group.icon}
+                      class="w-4 h-4 text-muted-foreground"
+                    />
+                    {group.label}
+                  </div>
+                  <div class="flex flex-wrap gap-1.5">
+                    {group.items.map((item) => (
+                      <span class="text-xs bg-primary/10 text-primary px-2.5 py-1 rounded-sm font-medium">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <!-- 05 — Current Focus -->
+        <div class="mt-12">
+          <p
+            class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-3"
+          >
+            05 — Current focus
+          </p>
+          <div
+            class="border-l-4 border-primary bg-primary/[0.04] rounded-r-md p-4 lg:p-5"
+          >
+            <p class="text-base text-foreground leading-relaxed">
+              Currently, I am expanding my skills in modern web development
+              using Laravel, Vue, React, TypeScript, and AI-assisted software
+              engineering workflows — building real-world projects that prepare
+              me for professional software development roles.
+            </p>
           </div>
         </div>
       </div>

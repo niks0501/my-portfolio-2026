@@ -1,17 +1,13 @@
 ---
 import { Icon } from 'astro-icon/components';
+import type { Project } from '../types/project';
 
-interface Props {
-  title: string;
-  summary: string;
-  highlights: string[];
-  tags: { label: string; icon: string }[];
-  image: string;
-  githubUrl: string;
-  liveDemoUrl?: string;
+interface Props extends Project {
+  variant?: 'featured' | 'standard';
 }
 
 const {
+  slug,
   title,
   summary,
   highlights,
@@ -19,64 +15,228 @@ const {
   image,
   githubUrl,
   liveDemoUrl,
+  categories,
+  year,
+  role,
+  status,
+  metrics,
+  accent,
+  variant = 'standard',
 } = Astro.props;
+
+const isFeatured = variant === 'featured';
+
+const statusLabel: Record<Project['status'], string> = {
+  live: 'Live',
+  'in-progress': 'In progress',
+  archived: 'Archived',
+};
+
+const statusClasses: Record<Project['status'], string> = {
+  live: 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20',
+  'in-progress':
+    'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20',
+  archived: 'bg-muted text-muted-foreground border-border',
+};
+
+const categoryLabel: Record<Project['categories'][number], string> = {
+  'web-app': 'Web App',
+  data: 'Data',
+  tool: 'Tool',
+};
 ---
 
-<div class="bg-card border border-border rounded-lg overflow-hidden cursor-pointer transition-shadow hover:shadow-xl hover:-translate-y-1">
-  <img
-              src={image}
-              alt={`${title} — cover`}
-              class="w-full aspect-[16/9] object-cover"
-              loading="lazy"
-            />
-  <div class="p-8">
-    <h3 class="text-2xl font-semibold leading-tight text-card-foreground">
+<article
+  data-project-card
+  data-slug={slug}
+  data-categories={categories.join(' ')}
+  data-featured={isFeatured ? 'true' : 'false'}
+  class:list={[
+    'group bg-card border border-border rounded-lg overflow-hidden flex flex-col',
+    'transition-all duration-300 ease-out',
+    'hover:border-primary/30 hover:shadow-xl hover:-translate-y-1',
+    isFeatured && 'lg:col-span-2',
+  ]}
+>
+  <div class="relative overflow-hidden">
+    <img
+      src={image}
+      alt={`${title} — cover`}
+      class:list={[
+        'w-full object-cover',
+        isFeatured ? 'aspect-[16/9]' : 'aspect-[16/9]',
+      ]}
+      loading="lazy"
+      decoding="async"
+    />
+    <div class="absolute top-3 left-3 flex flex-wrap items-center gap-1.5 max-w-[calc(100%-1.5rem)]">
+      {categories.map((cat) => (
+        <span class="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.12em] bg-background/85 backdrop-blur-sm text-foreground px-2 py-0.5 rounded-md border border-border/60">
+          <span
+            class="w-1.5 h-1.5 rounded-full"
+            style={`background-color: ${accent}`}
+            aria-hidden="true"
+          />
+          {categoryLabel[cat]}
+        </span>
+      ))}
+    </div>
+  </div>
+
+  <div
+    class:list={[
+      'flex-1 flex flex-col',
+      isFeatured ? 'p-8 lg:p-10' : 'p-6 lg:p-8',
+    ]}
+  >
+    <div class="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+      <span class="font-heading tabular-nums">{year}</span>
+      <span class="text-border" aria-hidden="true">·</span>
+      <span>{role}</span>
+      <span
+        class:list={[
+          'inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-[0.1em] px-2 py-0.5 rounded-full border ml-auto',
+          statusClasses[status],
+        ]}
+      >
+        <span
+          class:list={[
+            'w-1.5 h-1.5 rounded-full',
+            status === 'live' && 'bg-green-500',
+            status === 'in-progress' && 'bg-amber-500',
+            status === 'archived' && 'bg-muted-foreground',
+          ]}
+          aria-hidden="true"
+        />
+        {statusLabel[status]}
+      </span>
+    </div>
+
+    <h3
+      class:list={[
+        'font-semibold leading-tight text-card-foreground',
+        isFeatured ? 'text-3xl lg:text-4xl' : 'text-xl lg:text-2xl',
+      ]}
+    >
       {title}
     </h3>
-    <p class="text-lg text-muted-foreground mt-3">{summary}</p>
-    <ul class="mt-4 space-y-1.5">
+
+    <p
+      class:list={[
+        'text-muted-foreground mt-3 leading-relaxed',
+        isFeatured ? 'text-lg lg:text-xl max-w-2xl' : 'text-base',
+      ]}
+    >
+      {summary}
+    </p>
+
+    {
+      isFeatured && metrics.length > 0 && (
+        <dl class="mt-6 grid grid-cols-3 gap-3 max-w-2xl">
+          {metrics.map((metric) => (
+            <div class="border-l-2 border-border pl-3 py-1">
+              <dt class="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                {metric.label}
+              </dt>
+              <dd class="text-xl lg:text-2xl font-heading font-semibold text-foreground mt-0.5">
+                {metric.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+
+    <ul
+      class:list={[
+        isFeatured ? 'mt-6 space-y-2' : 'mt-4 space-y-1.5',
+        isFeatured && 'max-w-2xl',
+      ]}
+    >
       {highlights.map((item) => (
-        <li class="text-base text-foreground flex items-start gap-2">
-          <span class="text-muted-foreground shrink-0">&mdash;</span>
-          <span>{item}</span>
+        <li class="text-foreground flex items-start gap-2 leading-relaxed">
+          <Icon
+            name="tabler:check"
+            class:list={[
+              'shrink-0 mt-0.5 text-primary',
+              isFeatured ? 'w-5 h-5' : 'w-4 h-4',
+            ]}
+          />
+          <span class={isFeatured ? 'text-base' : 'text-sm'}>{item}</span>
         </li>
       ))}
     </ul>
-    <div class="flex flex-wrap gap-2 mt-4">
-      {tags.map((tag) => (
-        <span class="text-sm bg-primary/10 text-primary px-3 py-1 rounded-sm transition-colors hover:bg-primary/20 cursor-default inline-flex items-center gap-1.5">
-          <Icon name={tag.icon} class="w-4 h-4" />
+
+    <div class="flex flex-wrap gap-2 mt-5">
+      {tags.slice(0, isFeatured ? tags.length : 4).map((tag) => (
+        <span class="text-xs bg-primary/10 text-primary px-2.5 py-1 rounded-sm inline-flex items-center gap-1.5">
+          <Icon name={tag.icon} class="w-3.5 h-3.5" />
           <span>{tag.label}</span>
         </span>
       ))}
     </div>
-    <div class="flex items-center justify-between mt-8 pt-5 border-t border-border">
-      <a
-        href={githubUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-sm font-medium text-foreground hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm transition-colors"
+
+    <div
+      class="flex items-center justify-between mt-auto pt-6 border-t border-border"
+    >
+      <button
+        type="button"
+        data-project-trigger={slug}
+        aria-label={`Open case study for ${title}`}
+        class="inline-flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm transition-colors cursor-pointer"
       >
-        GitHub
-      </a>
-      {
-        liveDemoUrl
-          ? (
+        View case study
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+      <div class="flex items-center gap-4">
+        <a
+          href={githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${title} on GitHub`}
+          class="text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm transition-colors inline-flex items-center gap-1.5"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+            ></path>
+          </svg>
+          Code
+        </a>
+        {
+          liveDemoUrl && (
             <a
               href={liveDemoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              class="text-sm font-medium text-foreground hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm transition-colors"
+              class="text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm transition-colors"
             >
               Live demo
             </a>
           )
-          : (
-            <span class="text-sm bg-muted text-muted-foreground px-3 py-1.5 rounded-md cursor-not-allowed opacity-50">
-              Coming soon
-            </span>
-          )
-      }
+        }
+      </div>
     </div>
   </div>
-</div>
+</article>
