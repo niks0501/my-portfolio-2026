@@ -12,10 +12,13 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@fontsource-variable/archivo": "^5.2.8",
     "@fontsource-variable/space-grotesk": "^5.2.10",
+    "@iconify-json/tabler": "^1.2.35",
     "@tabler/icons-react": "^3.44.0",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.4.2",
+    "astro-icon": "^1.1.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "radix-ui": "^1.4.3",

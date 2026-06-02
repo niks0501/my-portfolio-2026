@@ -1,14 +1,42 @@
 ---
+const skills = [
+  'Laravel', 'Vue', 'React', 'TypeScript', 'PHP',
+  'MySQL', 'Tailwind CSS', 'Astro', 'Git', 'Data Analytics',
+];
 ---
 
-<section>
+<section id="about" class="scroll-reveal">
   <div class="max-w-4xl lg:max-w-7xl mx-auto px-6 py-16">
-    <h2 class="text-2xl font-semibold leading-tight text-foreground mb-6">
+    <h2 class="text-2xl font-semibold leading-tight text-foreground mb-8">
       About
     </h2>
-    <p class="text-lg text-foreground leading-relaxed">
-      I'm a student developer focused on full-stack web development with clean UI implementation and analytics-driven features. I build practical web apps and internal tools that keep workflows simple and decisions clear.
-    </p>
-
+    <div class="flex flex-col md:flex-row gap-10 items-start">
+      <div class="shrink-0">
+        <img
+          src="/images/profile.jpg"
+          alt="Nikko Causapin"
+          class="w-40 h-40 rounded-lg object-cover border border-border"
+          loading="lazy"
+        />
+      </div>
+      <div class="flex-1">
+        <p class="text-lg text-foreground leading-relaxed">
+          I'm a student developer focused on full-stack web development with clean UI implementation and analytics-driven features. I build practical web apps and internal tools that keep workflows simple and decisions clear.
+        </p>
+        <p class="text-lg text-muted-foreground leading-relaxed mt-4">
+          I enjoy working on projects that solve real problems — from livestock management systems to data cleaning pipelines. Every project is an opportunity to write cleaner code and ship something people actually use.
+        </p>
+        <div class="mt-6">
+          <p class="text-sm font-medium text-foreground mb-3">Technologies I work with</p>
+          <div class="flex flex-wrap gap-2">
+            {skills.map((skill) => (
+              <span class="text-sm bg-muted text-muted-foreground px-3 py-1.5 rounded-md">
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>

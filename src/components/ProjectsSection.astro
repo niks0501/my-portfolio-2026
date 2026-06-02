@@ -12,18 +12,14 @@ const projects = [
       'Profitability and profit-sharing reports',
     ],
     tags: [
-      'Laravel',
-      'Vue',
-      'Tailwind',
-      'MySQL',
-      'Analytics',
-      'Livestock Management',
+      { label: 'Laravel', icon: 'tabler:brand-laravel' },
+      { label: 'Vue', icon: 'tabler:brand-vue' },
+      { label: 'Tailwind', icon: 'tabler:brand-tailwind' },
+      { label: 'MySQL', icon: 'tabler:database' },
+      { label: 'Analytics', icon: 'tabler:chart-bar' },
+      { label: 'Livestock Mgmt', icon: 'tabler:paw' },
     ],
-    images: [
-      '/images/projects/pig-sikap/dashboard.png',
-      '/images/projects/pig-sikap/inventory.png',
-      '/images/projects/pig-sikap/profitability.png',
-    ],
+    image: '/images/projects/pig-sikap/dashboard.png',
     githubUrl: 'https://github.com/niks0501/pig-sikap',
     liveDemoUrl: undefined as string | undefined,
   },
@@ -37,18 +33,14 @@ const projects = [
       'Analytics dashboards, visualizations, and insights',
     ],
     tags: [
-      'Laravel',
-      'Inertia',
-      'React',
-      'TypeScript',
-      'Tailwind',
-      'Data Analytics',
+      { label: 'Laravel', icon: 'tabler:brand-laravel' },
+      { label: 'Inertia', icon: 'tabler:brand-inertia' },
+      { label: 'React', icon: 'tabler:brand-react' },
+      { label: 'TypeScript', icon: 'tabler:brand-typescript' },
+      { label: 'Tailwind', icon: 'tabler:brand-tailwind' },
+      { label: 'Data Analytics', icon: 'tabler:chart-dots' },
     ],
-    images: [
-      '/images/projects/dirty2data/dashboard.png',
-      '/images/projects/dirty2data/dataset-cleaning.png',
-      '/images/projects/dirty2data/visualization.png',
-    ],
+    image: '/images/projects/dirty2data/dashboard.png',
     githubUrl: 'https://github.com/niks0501/dirty2data',
     liveDemoUrl: undefined as string | undefined,
   },
@@ -61,24 +53,26 @@ const projects = [
       'Document types/templates and proof uploads',
       'Admin dashboard and statistics',
     ],
-    tags: ['PHP', 'MySQL', 'MVC', 'Bootstrap', 'Barangay System'],
-    images: [
-      '/images/projects/lumbangan-system/dashboard.png',
-      '/images/projects/lumbangan-system/document-requests.png',
-      '/images/projects/lumbangan-system/document-types.png',
+    tags: [
+      { label: 'PHP', icon: 'tabler:brand-php' },
+      { label: 'MySQL', icon: 'tabler:database' },
+      { label: 'MVC', icon: 'tabler:code' },
+      { label: 'Bootstrap', icon: 'tabler:brand-bootstrap' },
+      { label: 'Barangay System', icon: 'tabler:building-community' },
     ],
+    image: '/images/projects/lumbangan-system/dashboard.png',
     githubUrl: 'https://github.com/alfredD-12/LumbanganSystem',
     liveDemoUrl: undefined as string | undefined,
   },
 ];
 ---
 
-<section id="projects">
+<section id="projects" class="scroll-reveal">
   <div class="max-w-4xl lg:max-w-7xl mx-auto px-6 py-16">
     <h2 class="text-2xl font-semibold leading-tight text-foreground mb-10">
       Projects
     </h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 stagger-children">
       {projects.map((project) => <ProjectCard {...project} />)}
     </div>
   </div>

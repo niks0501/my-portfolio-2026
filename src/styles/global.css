@@ -1,12 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "@fontsource-variable/archivo";
 @import "@fontsource-variable/space-grotesk";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: var(--font-sans);
+    --font-heading: 'Archivo', sans-serif;
     --font-sans: 'Space Grotesk Variable', sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
@@ -132,4 +133,72 @@
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer utilities {
+  .section-divider {
+    @apply relative;
+  }
+
+  .section-divider::before {
+    content: '';
+    @apply absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-border to-transparent;
+  }
+
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out-cubic, transform 0.6s ease-out-cubic;
+  }
+
+  .scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .stagger-children > * {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease-out-cubic, transform 0.5s ease-out-cubic;
+  }
+
+  .stagger-children.revealed > *:nth-child(1) { transition-delay: 0ms; }
+  .stagger-children.revealed > *:nth-child(2) { transition-delay: 80ms; }
+  .stagger-children.revealed > *:nth-child(3) { transition-delay: 160ms; }
+  .stagger-children.revealed > *:nth-child(4) { transition-delay: 240ms; }
+  .stagger-children.revealed > *:nth-child(5) { transition-delay: 320ms; }
+
+  .stagger-children.revealed > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .stagger-children > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

@@ -1,0 +1,150 @@
+---
+const navLinks = [
+  { label: 'Projects', href: '#projects' },
+  { label: 'About', href: '#about' },
+  { label: 'Services', href: '#services' },
+  { label: 'Contact', href: '#contact' },
+];
+---
+
+<nav
+  id="navbar"
+  class="fixed top-4 left-4 right-4 z-50 bg-background/80 backdrop-blur-md border border-border rounded-lg shadow-sm transition-all duration-300"
+  aria-label="Main navigation"
+>
+  <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+    <a
+      href="#"
+      class="text-sm font-semibold text-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+    >
+      NC
+    </a>
+
+    <div class="hidden md:flex items-center gap-1">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class="nav-link text-sm text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
+          {link.label}
+        </a>
+      ))}
+    </div>
+
+    <a
+      href="mailto:nikkocausapin61@gmail.com"
+      class="hidden md:inline-flex items-center text-sm bg-primary text-primary-foreground px-4 py-1.5 rounded-md font-medium hover:brightness-90 transition-[filter] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+    >
+      Hire Me
+    </a>
+
+    <button
+      id="mobile-menu-btn"
+      type="button"
+      class="md:hidden text-muted-foreground hover:text-foreground p-2 cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
+      aria-label="Toggle mobile menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <svg id="menu-icon-open" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" />
+      </svg>
+      <svg id="menu-icon-close" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+        <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <div
+    id="mobile-menu"
+    class="md:hidden hidden border-t border-border"
+    role="menu"
+  >
+    <div class="px-4 py-3 space-y-1">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class="nav-link block text-sm text-muted-foreground hover:text-foreground px-3 py-2 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          role="menuitem"
+        >
+          {link.label}
+        </a>
+      ))}
+      <a
+        href="mailto:nikkocausapin61@gmail.com"
+        class="block text-sm bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium text-center mt-2 hover:brightness-90 transition-[filter]"
+        role="menuitem"
+      >
+        Hire Me
+      </a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const menuIconOpen = document.getElementById('menu-icon-open');
+  const menuIconClose = document.getElementById('menu-icon-close');
+  const navbar = document.getElementById('navbar');
+
+  menuBtn?.addEventListener('click', () => {
+    const isOpen = mobileMenu?.classList.toggle('hidden') === false;
+    menuBtn.setAttribute('aria-expanded', String(!isOpen));
+    menuIconOpen?.classList.toggle('hidden', !isOpen);
+    menuIconClose?.classList.toggle('hidden', isOpen);
+  });
+
+  mobileMenu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      menuBtn?.setAttribute('aria-expanded', 'false');
+      menuIconOpen?.classList.remove('hidden');
+      menuIconClose?.classList.add('hidden');
+    });
+  });
+
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const observerOptions = {
+    rootMargin: '-70px 0px -55% 0px',
+    threshold: 0,
+  };
+
+  const highlightObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        navLinks.forEach((link) => {
+          if (link.getAttribute('href') === `#${id}`) {
+            link.classList.add('text-foreground', 'bg-muted');
+            link.classList.remove('text-muted-foreground');
+          } else {
+            link.classList.remove('text-foreground', 'bg-muted');
+            link.classList.add('text-muted-foreground');
+          }
+        });
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach((section) => {
+    highlightObserver.observe(section);
+  });
+
+  let lastScrollY = 0;
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+    if (navbar) {
+      if (currentScrollY > 100) {
+        navbar.classList.add('top-2', 'left-2', 'right-2');
+        navbar.classList.remove('top-4', 'left-4', 'right-4');
+      } else {
+        navbar.classList.remove('top-2', 'left-2', 'right-2');
+        navbar.classList.add('top-4', 'left-4', 'right-4');
+      }
+    }
+    lastScrollY = currentScrollY;
+  }, { passive: true });
+</script>

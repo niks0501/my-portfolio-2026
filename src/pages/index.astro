@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
 import Hero from '../components/Hero.astro';
 import ProjectsSection from '../components/ProjectsSection.astro';
 import AboutSection from '../components/AboutSection.astro';
@@ -21,6 +22,7 @@ import ContactFooter from '../components/ContactFooter.astro';
     />
   </head>
   <body>
+    <Navbar />
     <main>
       <Hero />
       <ProjectsSection />
@@ -28,5 +30,8 @@ import ContactFooter from '../components/ContactFooter.astro';
       <ServicesSection />
       <ContactFooter />
     </main>
+    <script>
+      import '../scripts/scroll-reveal.js';
+    </script>
   </body>
 </html>
