@@ -1,6 +1,7 @@
 ---
 import { Icon } from 'astro-icon/components';
 import type { Project } from '../types/project';
+import { getToolTagClasses } from '../lib/toolStyles';
 
 interface Props extends Project {
   variant?: 'featured' | 'standard';
@@ -169,7 +170,7 @@ const categoryLabel: Record<Project['categories'][number], string> = {
 
     <div class="flex flex-wrap gap-2 mt-5">
       {tags.slice(0, isFeatured ? tags.length : 4).map((tag) => (
-        <span class="text-xs bg-primary/10 text-primary px-2.5 py-1 rounded-sm inline-flex items-center gap-1.5">
+        <span class={`text-xs ${getToolTagClasses(tag.label)} px-2.5 py-1 rounded-sm inline-flex items-center gap-1.5`}>
           <Icon name={tag.icon} class="w-3.5 h-3.5" />
           <span>{tag.label}</span>
         </span>
