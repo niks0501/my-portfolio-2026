@@ -158,7 +158,6 @@ import { Icon } from 'astro-icon/components';
 
         <div
           class="mt-6 flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-forwards delay-500"
-          role="list"
           aria-label="Tech stack"
         >
           <span
@@ -167,7 +166,6 @@ import { Icon } from 'astro-icon/components';
             <Icon
               name="logos:laravel"
               class="w-6 h-6 shrink-0"
-              role="listitem"
               aria-label="Laravel"
             />
             <span
@@ -183,7 +181,6 @@ import { Icon } from 'astro-icon/components';
             <Icon
               name="logos:react"
               class="w-6 h-6 shrink-0"
-              role="listitem"
               aria-label="React"
             />
             <span
@@ -199,7 +196,6 @@ import { Icon } from 'astro-icon/components';
             <Icon
               name="logos:mysql-icon"
               class="w-6 h-6 shrink-0"
-              role="listitem"
               aria-label="MySQL"
             />
             <span
@@ -215,7 +211,6 @@ import { Icon } from 'astro-icon/components';
             <Icon
               name="logos:tailwindcss-icon"
               class="w-6 h-6 shrink-0"
-              role="listitem"
               aria-label="Tailwind CSS"
             />
             <span
@@ -231,7 +226,6 @@ import { Icon } from 'astro-icon/components';
             <Icon
               name="logos:git-icon"
               class="w-6 h-6 shrink-0"
-              role="listitem"
               aria-label="Git"
             />
             <span
@@ -247,7 +241,6 @@ import { Icon } from 'astro-icon/components';
             <Icon
               name="logos:vue"
               class="w-6 h-6 shrink-0"
-              role="listitem"
               aria-label="Vue"
             />
             <span
@@ -288,6 +281,7 @@ import { Icon } from 'astro-icon/components';
   <dialog
     id="badge-modal"
     class="backdrop:bg-black/50 rounded-2xl p-6 w-[560px] max-w-[95vw] max-h-[90vh] border border-border bg-background overflow-hidden"
+    aria-labelledby="modal-title"
   >
     <div class="flex justify-end">
       <form method="dialog">

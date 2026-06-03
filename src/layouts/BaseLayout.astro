@@ -89,6 +89,17 @@ const enableVercelInsights = import.meta.env.VERCEL === '1';
         document.documentElement.dataset.theme = theme;
       })();
     </script>
+    <script>
+      function applyStoredTheme() {
+        const stored = localStorage.getItem('theme');
+        if (stored) {
+          document.documentElement.classList.toggle('dark', stored === 'dark');
+          document.documentElement.dataset.theme = stored;
+        }
+        window.dispatchEvent(new Event('theme-sync'));
+      }
+      document.addEventListener('astro:page-load', applyStoredTheme);
+    </script>
 
     {
       ldItems.map((item) => (

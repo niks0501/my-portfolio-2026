@@ -272,8 +272,8 @@ const iconPath: Record<string, string> = {
           <p>Built with Astro · Commit {buildSha}</p>
         </div>
         <button
+          id="back-to-top"
           type="button"
-          onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
           class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
           aria-label="Back to top"
         >
@@ -299,6 +299,10 @@ const iconPath: Record<string, string> = {
 </section>
 
 <script>
+  document.getElementById('back-to-top')?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
   const copyButton = document.querySelector('[data-copy-email]');
   const copyLabel = copyButton?.querySelector('[data-copy-label]');
 
@@ -312,6 +316,7 @@ const iconPath: Record<string, string> = {
         if (copyLabel) copyLabel.textContent = 'Copy Email';
       }, 1800);
     } catch {
+      if (copyLabel) copyLabel.textContent = 'Copy Email';
       window.location.href = `mailto:${email}`;
     }
   });

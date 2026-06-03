@@ -38,7 +38,6 @@ const filters: { id: 'all' | ProjectCategory; label: string }[] = [
 
       <div
         class="flex flex-nowrap sm:flex-wrap items-center gap-2 overflow-x-auto sm:overflow-visible -mx-6 px-6 sm:mx-0 sm:px-0"
-        role="tablist"
         aria-label="Filter projects by category"
         data-projects-filters
       >
@@ -46,7 +45,6 @@ const filters: { id: 'all' | ProjectCategory; label: string }[] = [
           filters.map((filter, i) => (
             <button
               type="button"
-              role="tab"
               data-filter={filter.id}
               aria-pressed={i === 0 ? 'true' : 'false'}
               class:list={[
@@ -65,7 +63,7 @@ const filters: { id: 'all' | ProjectCategory; label: string }[] = [
     </div>
 
     <div
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 stagger-children"
+      class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch"
       data-projects-grid
     >
       {

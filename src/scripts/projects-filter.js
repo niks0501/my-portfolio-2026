@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+function init() {
   const filterContainer = document.querySelector('[data-projects-filters]');
   const grid = document.querySelector('[data-projects-grid]');
   if (!filterContainer || !grid) return;
@@ -22,10 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
         filter === 'all' ||
         categories.includes(filter) ||
         (filter !== 'all' && featured);
+
       if (reduceMotion) {
         card.classList.toggle('hidden', !show);
         return;
       }
+
       if (show) {
         card.classList.remove('hidden');
         requestAnimationFrame(() => {
@@ -64,4 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!filter) return;
     apply(filter);
   });
-});
+}
+
+init();
+document.addEventListener('astro:after-swap', init);

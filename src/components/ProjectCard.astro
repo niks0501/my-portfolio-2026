@@ -2,6 +2,7 @@
 import { Icon } from 'astro-icon/components';
 import type { Project } from '../types/project';
 import { getToolTagClasses } from '../lib/toolStyles';
+import { statusLabel, statusClasses, categoryLabel } from '../lib/projectUtils';
 
 interface Props extends Project {
   variant?: 'featured' | 'standard';
@@ -29,25 +30,6 @@ const {
 } = Astro.props;
 
 const isFeatured = variant === 'featured';
-
-const statusLabel: Record<Project['status'], string> = {
-  live: 'Live',
-  'in-progress': 'In progress',
-  archived: 'Archived',
-};
-
-const statusClasses: Record<Project['status'], string> = {
-  live: 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20',
-  'in-progress':
-    'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20',
-  archived: 'bg-muted text-muted-foreground border-border',
-};
-
-const categoryLabel: Record<Project['categories'][number], string> = {
-  'web-app': 'Web App',
-  data: 'Data',
-  tool: 'Tool',
-};
 ---
 
 <article
@@ -59,8 +41,8 @@ const categoryLabel: Record<Project['categories'][number], string> = {
     'group relative bg-card border border-border rounded-lg overflow-hidden flex flex-col',
     'transition-all duration-300 ease-out',
     'hover:border-primary/30 hover:shadow-xl hover:-translate-y-1',
-    isFeatured && 'lg:col-span-2',
   ]}
+  style="min-height: 480px;"
 >
   <span
     class="absolute left-0 top-0 bottom-0 w-[3px]"
@@ -162,7 +144,7 @@ const categoryLabel: Record<Project['categories'][number], string> = {
               <dt class="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
                 {metric.label}
               </dt>
-              <dd class="text-xl lg:text-2xl font-heading font-semibold text-foreground mt-0.5">
+              <dd class="text-xl lg:text font-heading font-semibold text-foreground mt-0.5">
                 {metric.value}
               </dd>
             </div>
@@ -186,6 +168,7 @@ const categoryLabel: Record<Project['categories'][number], string> = {
                 'shrink-0 mt-0.5 text-primary',
                 isFeatured ? 'w-5 h-5' : 'w-4 h-4',
               ]}
+              aria-hidden="true"
             />
             <span class={isFeatured ? 'text-base' : 'text-sm'}>{item}</span>
           </li>
@@ -199,7 +182,7 @@ const categoryLabel: Record<Project['categories'][number], string> = {
           <span
             class={`text-xs ${getToolTagClasses(tag.label)} px-2.5 py-1 rounded-sm inline-flex items-center gap-1.5`}
           >
-            <Icon name={tag.icon} class="w-3.5 h-3.5" />
+            <Icon name={tag.icon} class="w-3.5 h-3.5" aria-hidden="true" />
             <span>{tag.label}</span>
           </span>
         ))

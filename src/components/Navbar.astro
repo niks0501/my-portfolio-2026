@@ -37,7 +37,7 @@ const navLinks = [
     </a>
 
     <!-- Center zone: Nav links (desktop) -->
-    <nav class="hidden md:flex items-center" aria-label="Sections">
+    <div class="hidden md:flex items-center">
       <ul class="flex items-center gap-0.5">
         {
           navLinks.map((link) => (
@@ -59,12 +59,13 @@ const navLinks = [
           ))
         }
       </ul>
-    </nav>
+    </div>
 
     <!-- Right zone: Status + CTA -->
     <div class="flex items-center gap-2 lg:gap-3 shrink-0">
       <span
         class="hidden xl:inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground"
+        aria-hidden="true"
       >
         <span class="relative flex w-1.5 h-1.5" aria-hidden="true">
           <span
@@ -269,12 +270,10 @@ const navLinks = [
   const menuIconOpen = document.getElementById('menu-icon-open');
   const menuIconClose = document.getElementById('menu-icon-close');
   const navbar = document.getElementById('navbar');
-  const themeToggles = document.querySelectorAll('[data-theme-toggle]');
 
-  const syncThemeControls = () => {
+  function syncThemeControls() {
     const isDark = document.documentElement.classList.contains('dark');
-
-    themeToggles.forEach((toggle) => {
+    document.querySelectorAll('[data-theme-toggle]').forEach((toggle) => {
       toggle.setAttribute(
         'aria-label',
         isDark ? 'Switch to light mode' : 'Switch to dark mode',
@@ -287,22 +286,24 @@ const navLinks = [
         .querySelector('[data-theme-icon="dark"]')
         ?.classList.toggle('hidden', !isDark);
     });
-  };
+  }
 
-  themeToggles.forEach((toggle) => {
-    toggle.addEventListener('click', () => {
-      const nextTheme = document.documentElement.classList.contains('dark')
-        ? 'light'
-        : 'dark';
+  document.addEventListener('click', (e) => {
+    const toggle = (e.target as HTMLElement)?.closest('[data-theme-toggle]');
+    if (!toggle) return;
 
-      document.documentElement.classList.toggle('dark', nextTheme === 'dark');
-      document.documentElement.dataset.theme = nextTheme;
-      localStorage.setItem('theme', nextTheme);
-      syncThemeControls();
-    });
+    const nextTheme = document.documentElement.classList.contains('dark')
+      ? 'light'
+      : 'dark';
+
+    document.documentElement.classList.toggle('dark', nextTheme === 'dark');
+    document.documentElement.dataset.theme = nextTheme;
+    localStorage.setItem('theme', nextTheme);
+    syncThemeControls();
   });
 
   syncThemeControls();
+  window.addEventListener('theme-sync', syncThemeControls);
 
   menuBtn?.addEventListener('click', () => {
     const isOpen = mobileMenu?.classList.toggle('hidden') === false;

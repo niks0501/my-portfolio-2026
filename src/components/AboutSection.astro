@@ -212,7 +212,7 @@ const currentFocus = [
           >
             About
           </p>
-          <h3
+          <h2
             class="text-3xl lg:text-4xl font-semibold leading-tight text-foreground text-balance"
           >
             Software developer building business systems, analytics platforms,
@@ -285,7 +285,7 @@ const currentFocus = [
                       <span
                         class={`text-[10px] ${getToolTagClasses(tag.label)} px-2 py-0.5 rounded-sm inline-flex items-center gap-1 font-medium`}
                       >
-                        <Icon name={tag.icon} class="w-3 h-3" />
+                        <Icon name={tag.icon} class="w-3 h-3" aria-hidden="true" />
                         {tag.label}
                       </span>
                     ))}
@@ -311,6 +311,7 @@ const currentFocus = [
                     <Icon
                       name={group.icon}
                       class="w-4 h-4 text-muted-foreground"
+                      aria-hidden="true"
                     />
                     {group.label}
                   </div>
