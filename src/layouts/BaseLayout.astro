@@ -22,7 +22,7 @@ const {
   jsonLd = [],
 } = Astro.props;
 
-const site = Astro.site ?? new URL('https://my-portfolio-2026.vercel.app');
+const site = Astro.site ?? new URL('https://nikkocausapin.vercel.app');
 const canonicalUrl = new URL(canonicalPath, site);
 const imageUrl = new URL(image, site);
 const ldItems = Array.isArray(jsonLd) ? jsonLd : [jsonLd];

@@ -7,7 +7,7 @@ import icon from 'astro-icon';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://my-portfolio-2026.vercel.app',
+  site: 'https://nikkocausapin.vercel.app',
   trailingSlash: 'always',
   prefetch: true,
   output: 'static',

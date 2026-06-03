@@ -29,4 +29,10 @@ pnpm-debug.log*
 AGENTS.md
 .planning
 
+# vercel
+.vercel/
+
 .playwright-mcp
+
+.vercel
+.env*

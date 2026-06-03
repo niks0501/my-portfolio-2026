@@ -1,5 +1,5 @@
 export const EMAIL = 'nikkocausapin61@gmail.com';
-export const SITE_URL = 'https://my-portfolio-2026.vercel.app';
+export const SITE_URL = 'https://nikkocausapin.vercel.app';
 export const PROFILE_IMAGE = '/images/profile.webp';
 
 export const AUTHOR = {

@@ -45,7 +45,7 @@ Production deployment uses the Vercel CLI after CI passes. Add these repository 
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID`
 
-The current canonical site URL is set to `https://my-portfolio-2026.vercel.app` in `astro.config.mjs`. Update it when a final Vercel project URL or custom domain is assigned.
+The current canonical site URL is set to `https://nikkocausapin.vercel.app` in `astro.config.mjs`.
 
 ## Assets
 
