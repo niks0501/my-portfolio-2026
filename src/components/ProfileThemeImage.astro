@@ -1,0 +1,517 @@
+---
+interface Props {
+  lightRestSrc?: string;
+  darkRestSrc?: string;
+  lightFallbackSrc?: string;
+  darkFallbackSrc?: string;
+  lightToDarkDir?: string;
+  darkToLightDir?: string;
+  lightToDarkFrameCount?: number;
+  darkToLightFrameCount?: number;
+  frameRate?: number;
+  alt?: string;
+  class?: string;
+  shape?: 'avatar' | 'card';
+  width?: number;
+  height?: number;
+  loading?: 'eager' | 'lazy';
+  fetchpriority?: 'high' | 'low' | 'auto';
+}
+
+const {
+  lightRestSrc = '/profile-frames/light-to-dark/frame-000.webp',
+  darkRestSrc = '/profile-frames/dark-to-light/frame-000.webp',
+  lightFallbackSrc = '/images/profile.webp',
+  darkFallbackSrc = '/images/profile-dark-shades.webp',
+  lightToDarkDir = '/profile-frames/light-to-dark',
+  darkToLightDir = '/profile-frames/dark-to-light',
+  lightToDarkFrameCount = 96,
+  darkToLightFrameCount = 96,
+  frameRate = 96,
+  alt = 'Nikko Causapin, software engineer and web developer',
+  class: className = 'w-72 h-72 md:w-96 md:h-96',
+  shape = 'avatar',
+  width = 768,
+  height = 768,
+  loading = 'eager',
+  fetchpriority = 'high',
+} = Astro.props;
+
+const shapeClass = shape === 'card' ? 'rounded-3xl' : 'rounded-full';
+const imageClass =
+  'absolute inset-0 h-full w-full scale-100 object-cover transition-transform duration-500 ease-out dark:scale-105 motion-reduce:scale-100 motion-reduce:transition-none';
+---
+
+<div
+  data-profile-theme-frames
+  data-light-rest-src={lightRestSrc}
+  data-dark-rest-src={darkRestSrc}
+  data-light-fallback-src={lightFallbackSrc}
+  data-dark-fallback-src={darkFallbackSrc}
+  data-light-to-dark-dir={lightToDarkDir}
+  data-dark-to-light-dir={darkToLightDir}
+  data-light-to-dark-frame-count={lightToDarkFrameCount}
+  data-dark-to-light-frame-count={darkToLightFrameCount}
+  data-frame-rate={frameRate}
+  class:list={[
+    'profile-theme-image relative aspect-square overflow-hidden border-4 border-border bg-muted shadow-xl transition-[border-color,box-shadow] duration-500 ease-out dark:border-white/20 dark:ring-1 dark:ring-white/10 dark:shadow-[0_28px_90px_rgba(0,0,0,0.38)]',
+    shapeClass,
+    className,
+  ]}
+>
+  <img
+    data-profile-theme-frame="front"
+    data-profile-theme-fallback-src={lightFallbackSrc}
+    src={lightRestSrc}
+    alt={alt}
+    width={width}
+    height={height}
+    class:list={[imageClass, 'opacity-100']}
+    loading={loading}
+    decoding="async"
+    fetchpriority={fetchpriority}
+  />
+  <img
+    data-profile-theme-frame="back"
+    data-profile-theme-fallback-src={lightFallbackSrc}
+    src={lightRestSrc}
+    alt=""
+    width={width}
+    height={height}
+    class:list={[imageClass, 'opacity-0']}
+    loading={loading}
+    decoding="async"
+    fetchpriority="auto"
+    aria-hidden="true"
+  />
+</div>
+
+<script is:inline>
+  (() => {
+    const script = document.currentScript;
+    const root = script?.previousElementSibling;
+    if (!(root instanceof HTMLElement)) return;
+
+    const images = root.querySelectorAll('[data-profile-theme-frame]');
+    if (images.length === 0) return;
+
+    const isDark = document.documentElement.classList.contains('dark');
+    const restSrc = isDark
+      ? root.dataset.darkRestSrc ||
+        '/profile-frames/dark-to-light/frame-000.webp'
+      : root.dataset.lightRestSrc ||
+        '/profile-frames/light-to-dark/frame-000.webp';
+
+    images.forEach((image) => {
+      if (image instanceof HTMLImageElement) image.src = restSrc;
+    });
+  })();
+</script>
+
+<script>
+  type ThemeName = 'light' | 'dark';
+
+  interface FrameSequence {
+    frames: string[];
+    preload: Promise<boolean>;
+  }
+
+  type ProfileFramesWindow = Window & {
+    __profileThemeFrameCleanups?: Set<() => void>;
+    __profileThemeFrameEventsBound?: boolean;
+  };
+
+  const profileFramesWindow = window as ProfileFramesWindow;
+  const cleanupCallbacks =
+    profileFramesWindow.__profileThemeFrameCleanups ?? new Set<() => void>();
+
+  profileFramesWindow.__profileThemeFrameCleanups = cleanupCallbacks;
+
+  function readTheme(): ThemeName {
+    return document.documentElement.classList.contains('dark')
+      ? 'dark'
+      : 'light';
+  }
+
+  function readData(root: HTMLElement, key: string, fallback: string) {
+    return root.dataset[key] || fallback;
+  }
+
+  function readNumberData(root: HTMLElement, key: string, fallback: number) {
+    const value = Number(root.dataset[key]);
+    return Number.isFinite(value) && value > 0 ? value : fallback;
+  }
+
+  function buildFramePaths(directory: string, frameCount: number) {
+    const baseDirectory = directory.endsWith('/')
+      ? directory.slice(0, -1)
+      : directory;
+
+    return Array.from({ length: frameCount }, (_, index) => {
+      const frameNumber = String(index).padStart(3, '0');
+      return `${baseDirectory}/frame-${frameNumber}.webp`;
+    });
+  }
+
+  async function preloadImage(src: string) {
+    const image = new Image();
+    image.decoding = 'async';
+    image.src = src;
+
+    try {
+      await image.decode();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async function preloadFrames(frames: string[]) {
+    if (frames.length === 0) return false;
+
+    const results = await Promise.all(
+      frames.map((frame) => preloadImage(frame)),
+    );
+    return results.every(Boolean);
+  }
+
+  function initProfileThemeFrames(root: HTMLElement) {
+    if (root.dataset.profileThemeFramesInit === 'true') return;
+
+    const frontImage = root.querySelector<HTMLImageElement>(
+      '[data-profile-theme-frame="front"]',
+    );
+    const backImage = root.querySelector<HTMLImageElement>(
+      '[data-profile-theme-frame="back"]',
+    );
+
+    if (!frontImage || !backImage) return;
+
+    const frontFrameImage = frontImage;
+    const backFrameImage = backImage;
+
+    root.dataset.profileThemeFramesInit = 'true';
+
+    const lightRestSrc = readData(
+      root,
+      'lightRestSrc',
+      '/profile-frames/light-to-dark/frame-000.webp',
+    );
+    const darkRestSrc = readData(
+      root,
+      'darkRestSrc',
+      '/profile-frames/dark-to-light/frame-000.webp',
+    );
+    const lightFallbackSrc = readData(root, 'lightFallbackSrc', lightRestSrc);
+    const darkFallbackSrc = readData(root, 'darkFallbackSrc', darkRestSrc);
+    const lightToDarkDir = readData(
+      root,
+      'lightToDarkDir',
+      '/profile-frames/light-to-dark',
+    );
+    const darkToLightDir = readData(
+      root,
+      'darkToLightDir',
+      '/profile-frames/dark-to-light',
+    );
+    const lightToDarkFrameCount = readNumberData(
+      root,
+      'lightToDarkFrameCount',
+      96,
+    );
+    const darkToLightFrameCount = readNumberData(
+      root,
+      'darkToLightFrameCount',
+      96,
+    );
+    const frameRate = readNumberData(root, 'frameRate', 96);
+    const frameDelay = 1000 / frameRate;
+    const reducedMotionQuery = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    );
+
+    const lightToDarkFrames = buildFramePaths(
+      lightToDarkDir,
+      lightToDarkFrameCount,
+    );
+    const darkToLightFrames = buildFramePaths(
+      darkToLightDir,
+      darkToLightFrameCount,
+    );
+
+    // Preload both sequences once per component so playback can swap cached frames.
+    const lightToDark: FrameSequence = {
+      frames: lightToDarkFrames,
+      preload: preloadFrames(lightToDarkFrames),
+    };
+    const darkToLight: FrameSequence = {
+      frames: darkToLightFrames,
+      preload: preloadFrames(darkToLightFrames),
+    };
+
+    let displayedTheme = readTheme();
+    let visibleImage = frontFrameImage;
+    let bufferImage = backFrameImage;
+    let queuedTheme: ThemeName | null = null;
+    let isAnimating = false;
+    let isDisposed = false;
+    let activePlayback = 0;
+    let activeTimeout: number | undefined;
+    let activeWaitResolve: (() => void) | undefined;
+
+    function clearActiveTimeout() {
+      if (activeTimeout !== undefined) window.clearTimeout(activeTimeout);
+      activeTimeout = undefined;
+      activeWaitResolve?.();
+      activeWaitResolve = undefined;
+    }
+
+    function wait(ms: number) {
+      return new Promise<void>((resolve) => {
+        activeWaitResolve = resolve;
+        activeTimeout = window.setTimeout(() => {
+          activeTimeout = undefined;
+          activeWaitResolve = undefined;
+          resolve();
+        }, ms);
+      });
+    }
+
+    function fallbackForTheme(theme: ThemeName) {
+      return theme === 'dark' ? darkFallbackSrc : lightFallbackSrc;
+    }
+
+    function restForTheme(theme: ThemeName) {
+      return theme === 'dark' ? darkRestSrc : lightRestSrc;
+    }
+
+    function setVisibility(image: HTMLImageElement, isVisible: boolean) {
+      image.classList.toggle('opacity-100', isVisible);
+      image.classList.toggle('opacity-0', !isVisible);
+    }
+
+    function swapBuffers() {
+      setVisibility(bufferImage, true);
+      setVisibility(visibleImage, false);
+
+      const previousVisibleImage = visibleImage;
+      visibleImage = bufferImage;
+      bufferImage = previousVisibleImage;
+    }
+
+    async function decodeInto(image: HTMLImageElement, src: string) {
+      if (
+        image.getAttribute('src') === src &&
+        image.complete &&
+        image.naturalWidth > 0
+      ) {
+        try {
+          await image.decode();
+        } catch {
+          return image.naturalWidth > 0;
+        }
+
+        return true;
+      }
+
+      image.src = src;
+
+      try {
+        await image.decode();
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    async function showFrame(
+      src: string,
+      fallbackTheme: ThemeName,
+      playbackId: number,
+    ) {
+      if (isDisposed || playbackId !== activePlayback) return false;
+
+      const fallbackSrc = fallbackForTheme(fallbackTheme);
+      bufferImage.dataset.profileThemeFallbackSrc = fallbackSrc;
+
+      let loaded = await decodeInto(bufferImage, src);
+      if (!loaded && fallbackSrc !== src) {
+        loaded = await decodeInto(bufferImage, fallbackSrc);
+      }
+
+      if (!loaded || isDisposed || playbackId !== activePlayback) return false;
+
+      swapBuffers();
+      return true;
+    }
+
+    function forceFrame(src: string, fallbackTheme: ThemeName) {
+      const fallbackSrc = fallbackForTheme(fallbackTheme);
+
+      [frontFrameImage, backFrameImage].forEach((image) => {
+        image.dataset.profileThemeFallbackSrc = fallbackSrc;
+        image.src = src;
+      });
+
+      visibleImage = frontFrameImage;
+      bufferImage = backFrameImage;
+      setVisibility(visibleImage, true);
+      setVisibility(bufferImage, false);
+    }
+
+    function handleBufferError(event: Event) {
+      const image = event.currentTarget;
+      if (!(image instanceof HTMLImageElement)) return;
+
+      const fallbackSrc = image.dataset.profileThemeFallbackSrc;
+      if (!fallbackSrc || image.getAttribute('src') === fallbackSrc) return;
+
+      image.src = fallbackSrc;
+    }
+
+    async function transitionTo(nextTheme: ThemeName) {
+      if (isDisposed || nextTheme === displayedTheme) return;
+
+      const playbackId = activePlayback + 1;
+      activePlayback = playbackId;
+      isAnimating = true;
+      root.dataset.profileThemeFramesAnimating = 'true';
+
+      const sequence =
+        displayedTheme === 'light' && nextTheme === 'dark'
+          ? lightToDark
+          : darkToLight;
+
+      if (reducedMotionQuery.matches) {
+        await showFrame(restForTheme(nextTheme), nextTheme, playbackId);
+      } else {
+        const sequenceLoaded = await sequence.preload;
+        const latestTheme = queuedTheme ?? readTheme();
+
+        // If the user toggled again during preload, target the latest theme instead.
+        if (latestTheme !== nextTheme) {
+          isAnimating = false;
+          root.dataset.profileThemeFramesAnimating = 'false';
+          queuedTheme = null;
+          if (latestTheme !== displayedTheme) void transitionTo(latestTheme);
+          return;
+        }
+
+        if (sequenceLoaded) {
+          for (const frame of sequence.frames) {
+            if (
+              isDisposed ||
+              playbackId !== activePlayback ||
+              reducedMotionQuery.matches
+            ) {
+              return;
+            }
+
+            const frameShown = await showFrame(frame, nextTheme, playbackId);
+            if (!frameShown) {
+              if (isDisposed || playbackId !== activePlayback) return;
+              await showFrame(restForTheme(nextTheme), nextTheme, playbackId);
+              break;
+            }
+
+            await wait(frameDelay);
+          }
+        } else {
+          await showFrame(restForTheme(nextTheme), nextTheme, playbackId);
+        }
+      }
+
+      if (isDisposed || playbackId !== activePlayback) return;
+
+      displayedTheme = nextTheme;
+      isAnimating = false;
+      root.dataset.profileThemeFramesAnimating = 'false';
+
+      const targetTheme = queuedTheme ?? readTheme();
+      queuedTheme = null;
+
+      if (targetTheme !== displayedTheme) void transitionTo(targetTheme);
+    }
+
+    function requestTheme(nextTheme: ThemeName) {
+      if (isAnimating) {
+        queuedTheme = nextTheme;
+        return;
+      }
+
+      if (nextTheme === displayedTheme) return;
+      void transitionTo(nextTheme);
+    }
+
+    function handleThemeClassChange() {
+      requestTheme(readTheme());
+    }
+
+    function handleReducedMotionChange() {
+      if (!reducedMotionQuery.matches) return;
+
+      activePlayback += 1;
+      clearActiveTimeout();
+      queuedTheme = null;
+      isAnimating = false;
+      displayedTheme = readTheme();
+      root.dataset.profileThemeFramesAnimating = 'false';
+      void showFrame(
+        restForTheme(displayedTheme),
+        displayedTheme,
+        activePlayback,
+      );
+    }
+
+    const classObserver = new MutationObserver(handleThemeClassChange);
+
+    frontFrameImage.addEventListener('error', handleBufferError);
+    backFrameImage.addEventListener('error', handleBufferError);
+    reducedMotionQuery.addEventListener('change', handleReducedMotionChange);
+    classObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    forceFrame(restForTheme(displayedTheme), displayedTheme);
+
+    const cleanup = () => {
+      isDisposed = true;
+      activePlayback += 1;
+      clearActiveTimeout();
+      classObserver.disconnect();
+      frontFrameImage.removeEventListener('error', handleBufferError);
+      backFrameImage.removeEventListener('error', handleBufferError);
+      reducedMotionQuery.removeEventListener(
+        'change',
+        handleReducedMotionChange,
+      );
+      delete root.dataset.profileThemeFramesInit;
+      cleanupCallbacks.delete(cleanup);
+    };
+
+    cleanupCallbacks.add(cleanup);
+  }
+
+  function initAllProfileThemeFrames() {
+    document
+      .querySelectorAll<HTMLElement>('[data-profile-theme-frames]')
+      .forEach((root) => initProfileThemeFrames(root));
+  }
+
+  function cleanupAllProfileThemeFrames() {
+    cleanupCallbacks.forEach((cleanup) => cleanup());
+  }
+
+  if (!profileFramesWindow.__profileThemeFrameEventsBound) {
+    profileFramesWindow.__profileThemeFrameEventsBound = true;
+    document.addEventListener('astro:page-load', initAllProfileThemeFrames);
+    // Astro view transitions keep scripts alive, so disconnect observers before swaps.
+    document.addEventListener(
+      'astro:before-swap',
+      cleanupAllProfileThemeFrames,
+    );
+  }
+
+  initAllProfileThemeFrames();
+</script>
