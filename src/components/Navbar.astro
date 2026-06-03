@@ -268,6 +268,12 @@ const navLinks = [
 </style>
 
 <script>
+  type NavbarWindow = Window & {
+    __navbarThemeClickBound?: boolean;
+  };
+
+  const navbarWindow = window as NavbarWindow;
+
   function syncThemeControls() {
     const isDark = document.documentElement.classList.contains('dark');
     document.querySelectorAll('[data-theme-toggle]').forEach((toggle) => {
@@ -287,19 +293,22 @@ const navLinks = [
 
   syncThemeControls();
 
-  document.addEventListener('click', function handleThemeClick(e) {
-    const target = e.target;
-    if (!(target instanceof Element)) return;
-    const toggle = target.closest('[data-theme-toggle]');
-    if (!toggle) return;
-    const nextTheme = document.documentElement.classList.contains('dark')
-      ? 'light'
-      : 'dark';
-    document.documentElement.classList.toggle('dark', nextTheme === 'dark');
-    document.documentElement.dataset.theme = nextTheme;
-    localStorage.setItem('theme', nextTheme);
-    syncThemeControls();
-  });
+  if (!navbarWindow.__navbarThemeClickBound) {
+    navbarWindow.__navbarThemeClickBound = true;
+    document.addEventListener('click', function handleThemeClick(e) {
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+      const toggle = target.closest('[data-theme-toggle]');
+      if (!toggle) return;
+      const nextTheme = document.documentElement.classList.contains('dark')
+        ? 'light'
+        : 'dark';
+      document.documentElement.classList.toggle('dark', nextTheme === 'dark');
+      document.documentElement.dataset.theme = nextTheme;
+      localStorage.setItem('theme', nextTheme);
+      syncThemeControls();
+    });
+  }
 
   let highlightObserver: IntersectionObserver | null = null;
 

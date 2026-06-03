@@ -25,14 +25,14 @@ const {
   darkFallbackSrc = '/images/profile-dark-shades.webp',
   lightToDarkDir = '/profile-frames/light-to-dark',
   darkToLightDir = '/profile-frames/dark-to-light',
-  lightToDarkFrameCount = 96,
-  darkToLightFrameCount = 96,
-  frameRate = 96,
+  lightToDarkFrameCount = 36,
+  darkToLightFrameCount = 36,
+  frameRate = 30,
   alt = 'Nikko Causapin, software engineer and web developer',
   class: className = 'w-72 h-72 md:w-96 md:h-96',
   shape = 'avatar',
-  width = 768,
-  height = 768,
+  width = 640,
+  height = 640,
   loading = 'eager',
   fetchpriority = 'high',
 } = Astro.props;
@@ -111,8 +111,14 @@ const imageClass =
 <script>
   type ThemeName = 'light' | 'dark';
 
+  interface PreparedFrame {
+    src: string;
+    image: HTMLImageElement;
+    loaded: boolean;
+  }
+
   interface FrameSequence {
-    frames: string[];
+    frames: PreparedFrame[];
     preload: Promise<boolean>;
   }
 
@@ -137,9 +143,15 @@ const imageClass =
     return root.dataset[key] || fallback;
   }
 
-  function readNumberData(root: HTMLElement, key: string, fallback: number) {
+  function readNumberData(
+    root: HTMLElement,
+    key: string,
+    fallback: number,
+    max: number,
+  ) {
     const value = Number(root.dataset[key]);
-    return Number.isFinite(value) && value > 0 ? value : fallback;
+    if (!Number.isFinite(value) || value <= 0) return fallback;
+    return Math.min(value, max);
   }
 
   function buildFramePaths(directory: string, frameCount: number) {
@@ -153,20 +165,31 @@ const imageClass =
     });
   }
 
-  async function preloadImage(src: string) {
+  function prepareFrame(src: string): PreparedFrame {
     const image = new Image();
     image.decoding = 'async';
-    image.src = src;
+
+    return {
+      src,
+      image,
+      loaded: false,
+    };
+  }
+
+  async function preloadImage(frame: PreparedFrame) {
+    frame.image.src = frame.src;
 
     try {
-      await image.decode();
+      await frame.image.decode();
+      frame.loaded = true;
       return true;
     } catch {
+      frame.loaded = false;
       return false;
     }
   }
 
-  async function preloadFrames(frames: string[]) {
+  async function preloadFrames(frames: PreparedFrame[]) {
     if (frames.length === 0) return false;
 
     const results = await Promise.all(
@@ -217,14 +240,16 @@ const imageClass =
     const lightToDarkFrameCount = readNumberData(
       root,
       'lightToDarkFrameCount',
-      96,
+      36,
+      48,
     );
     const darkToLightFrameCount = readNumberData(
       root,
       'darkToLightFrameCount',
-      96,
+      36,
+      48,
     );
-    const frameRate = readNumberData(root, 'frameRate', 96);
+    const frameRate = readNumberData(root, 'frameRate', 30, 45);
     const frameDelay = 1000 / frameRate;
     const reducedMotionQuery = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
@@ -233,11 +258,11 @@ const imageClass =
     const lightToDarkFrames = buildFramePaths(
       lightToDarkDir,
       lightToDarkFrameCount,
-    );
+    ).map((frame) => prepareFrame(frame));
     const darkToLightFrames = buildFramePaths(
       darkToLightDir,
       darkToLightFrameCount,
-    );
+    ).map((frame) => prepareFrame(frame));
 
     // Preload both sequences once per component so playback can swap cached frames.
     const lightToDark: FrameSequence = {
@@ -256,25 +281,13 @@ const imageClass =
     let isAnimating = false;
     let isDisposed = false;
     let activePlayback = 0;
-    let activeTimeout: number | undefined;
-    let activeWaitResolve: (() => void) | undefined;
+    let activeAnimationFrame: number | undefined;
 
-    function clearActiveTimeout() {
-      if (activeTimeout !== undefined) window.clearTimeout(activeTimeout);
-      activeTimeout = undefined;
-      activeWaitResolve?.();
-      activeWaitResolve = undefined;
-    }
-
-    function wait(ms: number) {
-      return new Promise<void>((resolve) => {
-        activeWaitResolve = resolve;
-        activeTimeout = window.setTimeout(() => {
-          activeTimeout = undefined;
-          activeWaitResolve = undefined;
-          resolve();
-        }, ms);
-      });
+    function cancelActiveAnimationFrame() {
+      if (activeAnimationFrame !== undefined) {
+        window.cancelAnimationFrame(activeAnimationFrame);
+      }
+      activeAnimationFrame = undefined;
     }
 
     function fallbackForTheme(theme: ThemeName) {
@@ -345,6 +358,94 @@ const imageClass =
       return true;
     }
 
+    function showPreparedFrame(
+      frame: PreparedFrame,
+      fallbackTheme: ThemeName,
+      playbackId: number,
+    ) {
+      if (
+        isDisposed ||
+        playbackId !== activePlayback ||
+        !frame.loaded ||
+        !frame.image.complete ||
+        frame.image.naturalWidth === 0
+      ) {
+        return false;
+      }
+
+      const fallbackSrc = fallbackForTheme(fallbackTheme);
+      bufferImage.dataset.profileThemeFallbackSrc = fallbackSrc;
+      bufferImage.src = frame.image.currentSrc || frame.src;
+      swapBuffers();
+      return true;
+    }
+
+    function playSequence(
+      sequence: FrameSequence,
+      nextTheme: ThemeName,
+      playbackId: number,
+    ) {
+      return new Promise<boolean>((resolve) => {
+        if (sequence.frames.length === 0) {
+          resolve(false);
+          return;
+        }
+
+        let startedAt: number | undefined;
+        let lastFrameIndex = -1;
+
+        function finish(played: boolean) {
+          activeAnimationFrame = undefined;
+          resolve(played);
+        }
+
+        function tick(now: number) {
+          if (
+            isDisposed ||
+            playbackId !== activePlayback ||
+            reducedMotionQuery.matches
+          ) {
+            finish(false);
+            return;
+          }
+
+          startedAt ??= now;
+          const elapsed = Math.max(0, now - startedAt);
+          const frameIndex = Math.min(
+            sequence.frames.length - 1,
+            Math.floor(elapsed / frameDelay),
+          );
+
+          if (frameIndex !== lastFrameIndex) {
+            const frame = sequence.frames[frameIndex];
+            if (!frame) {
+              finish(false);
+              return;
+            }
+
+            const frameShown = showPreparedFrame(frame, nextTheme, playbackId);
+
+            if (!frameShown) {
+              finish(false);
+              return;
+            }
+
+            lastFrameIndex = frameIndex;
+          }
+
+          if (frameIndex >= sequence.frames.length - 1) {
+            finish(true);
+            return;
+          }
+
+          activeAnimationFrame = window.requestAnimationFrame(tick);
+        }
+
+        cancelActiveAnimationFrame();
+        activeAnimationFrame = window.requestAnimationFrame(tick);
+      });
+    }
+
     function forceFrame(src: string, fallbackTheme: ThemeName) {
       const fallbackSrc = fallbackForTheme(fallbackTheme);
 
@@ -398,23 +499,19 @@ const imageClass =
         }
 
         if (sequenceLoaded) {
-          for (const frame of sequence.frames) {
-            if (
-              isDisposed ||
-              playbackId !== activePlayback ||
-              reducedMotionQuery.matches
-            ) {
-              return;
-            }
+          const sequencePlayed = await playSequence(
+            sequence,
+            nextTheme,
+            playbackId,
+          );
 
-            const frameShown = await showFrame(frame, nextTheme, playbackId);
-            if (!frameShown) {
-              if (isDisposed || playbackId !== activePlayback) return;
-              await showFrame(restForTheme(nextTheme), nextTheme, playbackId);
-              break;
-            }
-
-            await wait(frameDelay);
+          if (
+            !sequencePlayed &&
+            !isDisposed &&
+            playbackId === activePlayback &&
+            !reducedMotionQuery.matches
+          ) {
+            await showFrame(restForTheme(nextTheme), nextTheme, playbackId);
           }
         } else {
           await showFrame(restForTheme(nextTheme), nextTheme, playbackId);
@@ -451,7 +548,7 @@ const imageClass =
       if (!reducedMotionQuery.matches) return;
 
       activePlayback += 1;
-      clearActiveTimeout();
+      cancelActiveAnimationFrame();
       queuedTheme = null;
       isAnimating = false;
       displayedTheme = readTheme();
@@ -478,7 +575,7 @@ const imageClass =
     const cleanup = () => {
       isDisposed = true;
       activePlayback += 1;
-      clearActiveTimeout();
+      cancelActiveAnimationFrame();
       classObserver.disconnect();
       frontFrameImage.removeEventListener('error', handleBufferError);
       backFrameImage.removeEventListener('error', handleBufferError);
