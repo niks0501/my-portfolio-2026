@@ -78,10 +78,8 @@ const currentFocus = [
 <section id="about" class="scroll-reveal">
   <div class="max-w-4xl lg:max-w-7xl mx-auto px-6 py-16">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-      <!-- Left rail: Quote + facts (sticky on desktop) -->
       <aside class="lg:col-span-4 lg:sticky lg:top-24 lg:self-start">
         <div class="flex flex-col">
-          <!-- Brand monogram + section anchor -->
           <div class="flex items-center gap-3 mb-7">
             <span
               class="grid place-items-center w-12 h-12 rounded-lg bg-foreground text-background text-lg font-heading font-semibold tracking-tight"
@@ -101,7 +99,6 @@ const currentFocus = [
             </div>
           </div>
 
-          <!-- Pull quote -->
           <blockquote class="border-l-2 border-primary pl-4">
             <p
               class="text-base font-heading font-medium text-foreground leading-snug italic text-balance"
@@ -114,7 +111,6 @@ const currentFocus = [
             </footer>
           </blockquote>
 
-          <!-- At a glance -->
           <div class="mt-8">
             <p
               class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-4"
@@ -155,7 +151,6 @@ const currentFocus = [
             </dl>
           </div>
 
-          <!-- CTAs -->
           <div class="flex flex-col gap-2 w-full mt-8">
             <a
               href="#projects"
@@ -203,9 +198,7 @@ const currentFocus = [
         </div>
       </aside>
 
-      <!-- Right column: Narrative -->
       <div class="lg:col-span-8">
-        <!-- Section eyebrow + positioning line -->
         <div>
           <p
             class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-3"
@@ -217,10 +210,9 @@ const currentFocus = [
           >
             Software developer building business systems, analytics platforms,
             and data-driven applications.
-          </h3>
+          </h2>
         </div>
 
-        <!-- 01 — Short Introduction -->
         <div class="mt-10">
           <p
             class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-3"
@@ -236,14 +228,15 @@ const currentFocus = [
           </p>
         </div>
 
-        <!-- 02 — What I Do -->
         <div class="mt-10">
           <p
             class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-3"
           >
             02 — What I do
           </p>
-          <p class="text-base text-muted-foreground leading-relaxed">
+          <p
+            class="text-base text-muted-foreground leading-relaxed dark:text-foreground/[0.85]"
+          >
             I enjoy developing management systems, analytics dashboards, and
             business applications. My projects focus on improving workflows,
             organizing data, and helping organizations make better decisions
@@ -251,7 +244,6 @@ const currentFocus = [
           </p>
         </div>
 
-        <!-- 03 — Featured Experience -->
         <div class="mt-12">
           <div class="flex items-baseline justify-between mb-5">
             <p
@@ -261,7 +253,7 @@ const currentFocus = [
             </p>
             <a
               href="#projects"
-              class="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              class="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer dark:text-foreground/75 dark:hover:text-foreground"
             >
               See all →
             </a>
@@ -272,12 +264,12 @@ const currentFocus = [
               featuredProjects.map((project) => (
                 <a
                   href="#projects"
-                  class="group bg-card border border-border rounded-lg p-4 flex flex-col transition-all duration-200 hover:border-primary/30 hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer"
+                  class="group glass-card p-4 flex flex-col dark:border-white/20"
                 >
                   <h4 class="font-heading font-semibold text-foreground text-base leading-snug group-hover:text-primary transition-colors">
                     {project.title}
                   </h4>
-                  <p class="text-sm text-muted-foreground mt-2 leading-relaxed flex-1">
+                  <p class="text-sm text-muted-foreground mt-2 leading-relaxed flex-1 dark:text-foreground/[0.82]">
                     {project.summary}
                   </p>
                   <div class="flex flex-wrap gap-1.5 mt-3">
@@ -285,7 +277,11 @@ const currentFocus = [
                       <span
                         class={`text-[10px] ${getToolTagClasses(tag.label)} px-2 py-0.5 rounded-sm inline-flex items-center gap-1 font-medium`}
                       >
-                        <Icon name={tag.icon} class="w-3 h-3" aria-hidden="true" />
+                        <Icon
+                          name={tag.icon}
+                          class="w-3 h-3"
+                          aria-hidden="true"
+                        />
                         {tag.label}
                       </span>
                     ))}
@@ -296,7 +292,6 @@ const currentFocus = [
           </div>
         </div>
 
-        <!-- 04 — Technologies -->
         <div class="mt-12">
           <p
             class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-5"
@@ -310,7 +305,7 @@ const currentFocus = [
                   <div class="flex items-center gap-1.5 text-sm font-medium text-foreground sm:w-44 shrink-0">
                     <Icon
                       name={group.icon}
-                      class="w-4 h-4 text-muted-foreground"
+                      class="w-4 h-4 text-primary/70"
                       aria-hidden="true"
                     />
                     {group.label}
@@ -330,16 +325,13 @@ const currentFocus = [
           </div>
         </div>
 
-        <!-- 05 — Current Focus -->
         <div class="mt-12">
           <p
             class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-3"
           >
             05 — Current focus
           </p>
-          <div
-            class="border border-border bg-card rounded-lg p-4 lg:p-5 shadow-sm"
-          >
+          <div class="glass-card p-4 lg:p-5">
             <p class="text-base text-foreground leading-relaxed">
               I am focused on shipping practical systems with clear workflows,
               measurable outcomes, and recruiter-readable case studies.
@@ -347,8 +339,8 @@ const currentFocus = [
             <dl class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
               {
                 currentFocus.map((item) => (
-                  <div class="border-l-2 border-primary/60 bg-primary/[0.04] rounded-r-md px-3 py-2.5">
-                    <dt class="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                  <div class="border-l-2 border-primary/60 bg-primary/[0.04] rounded-r-md px-3 py-2.5 dark:border-primary/80 dark:bg-primary/[0.1]">
+                    <dt class="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground dark:text-foreground/75">
                       {item.label}
                     </dt>
                     <dd class="text-sm font-medium text-foreground leading-snug mt-1">

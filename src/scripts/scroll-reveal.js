@@ -7,6 +7,8 @@ function isInViewport(el) {
   );
 }
 
+let scrollObserver = null;
+
 function init() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document
@@ -17,12 +19,16 @@ function init() {
     return;
   }
 
-  const observer = new IntersectionObserver(
+  if (scrollObserver) {
+    scrollObserver.disconnect();
+  }
+
+  scrollObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add('revealed');
-          observer.unobserve(entry.target);
+          scrollObserver.unobserve(entry.target);
         }
       });
     },
@@ -38,7 +44,7 @@ function init() {
     if (isInViewport(el)) {
       el.classList.add('revealed');
     } else {
-      observer.observe(el);
+      scrollObserver.observe(el);
     }
   });
 }

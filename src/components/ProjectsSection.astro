@@ -4,6 +4,15 @@ import { getProjects } from '../lib/projects';
 import type { ProjectCategory } from '../types/project';
 
 const projects = await getProjects();
+const featuredProject = projects.find((project) => project.featured);
+const standardProjects = projects.filter((project) => !project.featured);
+const orderedProjects = featuredProject
+  ? [
+      ...standardProjects.slice(0, 1),
+      featuredProject,
+      ...standardProjects.slice(1),
+    ]
+  : projects;
 
 const filters: { id: 'all' | ProjectCategory; label: string }[] = [
   { id: 'all', label: 'All' },
@@ -15,7 +24,7 @@ const filters: { id: 'all' | ProjectCategory; label: string }[] = [
 
 <section
   id="projects"
-  class="scroll-reveal bg-gradient-to-b from-primary/[0.035] via-primary/[0.02] to-transparent"
+  class="scroll-reveal bg-gradient-to-b from-primary/[0.035] via-primary/[0.02] to-transparent dark:from-primary/[0.08] dark:via-primary/[0.035]"
 >
   <div class="max-w-4xl lg:max-w-7xl mx-auto px-6 py-16">
     <div
@@ -30,7 +39,9 @@ const filters: { id: 'all' | ProjectCategory; label: string }[] = [
         <h2 class="text-2xl font-semibold leading-tight text-foreground">
           Projects
         </h2>
-        <p class="text-base text-muted-foreground mt-2 max-w-xl">
+        <p
+          class="text-base text-muted-foreground mt-2 max-w-xl dark:text-foreground/[0.85]"
+        >
           Web apps and internal tools with a focus on clean UI and analytics
           that make decisions easier.
         </p>
@@ -52,7 +63,7 @@ const filters: { id: 'all' | ProjectCategory; label: string }[] = [
                 'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                 i === 0
                   ? 'bg-foreground text-background border border-foreground'
-                  : 'bg-card text-muted-foreground border border-border hover:text-foreground hover:bg-muted/40',
+                  : 'glass text-muted-foreground hover:text-foreground',
               ]}
             >
               {filter.label}
@@ -63,11 +74,11 @@ const filters: { id: 'all' | ProjectCategory; label: string }[] = [
     </div>
 
     <div
-      class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch"
+      class="mx-auto grid w-full max-w-7xl grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8"
       data-projects-grid
     >
       {
-        projects.map((project) => (
+        orderedProjects.map((project) => (
           <ProjectCard
             {...project}
             variant={project.featured ? 'featured' : 'standard'}

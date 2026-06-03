@@ -40,7 +40,6 @@ const iconPath: Record<string, string> = {
 
 <section id="contact" class="scroll-reveal">
   <div class="max-w-4xl lg:max-w-7xl mx-auto px-6 py-16">
-    <!-- Header -->
     <p
       class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-3"
     >
@@ -57,11 +56,11 @@ const iconPath: Record<string, string> = {
     >
     </div>
 
-    <!-- Two-column grid -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 mt-12">
-      <!-- LEFT: Description + CTAs -->
       <div class="lg:col-span-5">
-        <p class="text-base text-muted-foreground leading-relaxed">
+        <p
+          class="text-base text-muted-foreground leading-relaxed dark:text-foreground/[0.85]"
+        >
           I'm open to internship opportunities, junior developer roles, academic
           collaborations, and small system development projects. If my work fits
           what you're looking for, feel free to reach out.
@@ -158,12 +157,13 @@ const iconPath: Record<string, string> = {
           </a>
         </div>
 
-        <p class="text-xs italic text-muted-foreground mt-5">
+        <p
+          class="text-xs italic text-muted-foreground mt-5 dark:text-foreground/70"
+        >
           Usually replies within a few days.
         </p>
       </div>
 
-      <!-- RIGHT: Contact cards -->
       <div class="lg:col-span-7 flex flex-col gap-3 stagger-children">
         {
           contactItems.map((item) => {
@@ -185,15 +185,15 @@ const iconPath: Record<string, string> = {
               <Wrapper
                 {...wrapperProps}
                 class:list={[
-                  'group flex items-center gap-4 bg-card border border-border rounded-lg p-5 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                  'group flex items-center gap-4 glass-card p-5',
                   interactive
-                    ? 'hover:border-primary/30 hover:-translate-y-0.5 hover:shadow-md cursor-pointer'
+                    ? 'cursor-pointer'
                     : item.available
                       ? 'cursor-default'
                       : 'opacity-60 cursor-not-allowed',
                 ]}
               >
-                <div class="w-11 h-11 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                <div class="w-11 h-11 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 dark:bg-primary/[0.18]">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="22"
@@ -210,7 +210,7 @@ const iconPath: Record<string, string> = {
                 </div>
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2">
-                    <p class="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                    <p class="text-xs uppercase tracking-wider text-muted-foreground font-medium dark:text-foreground/70">
                       {item.label}
                     </p>
                   </div>
@@ -229,7 +229,7 @@ const iconPath: Record<string, string> = {
                     stroke-width="1.5"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    class="text-muted-foreground shrink-0 hidden sm:block"
+                    class="text-muted-foreground shrink-0 hidden sm:block dark:text-foreground/70"
                     aria-hidden="true"
                   >
                     <path d="M15 3h6v6" />
@@ -248,7 +248,7 @@ const iconPath: Record<string, string> = {
                     stroke-width="1.5"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    class="text-muted-foreground shrink-0 hidden sm:block"
+                    class="text-muted-foreground shrink-0 hidden sm:block dark:text-foreground/70"
                     aria-hidden="true"
                   >
                     <polyline points="9 18 15 12 9 6" />
@@ -261,20 +261,22 @@ const iconPath: Record<string, string> = {
       </div>
     </div>
 
-    <hr class="border-t border-border my-12" />
+    <hr class="border-t border-[color:var(--glass-border)] my-12" />
 
     <footer>
       <div
         class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
       >
-        <div class="text-xs text-muted-foreground space-y-1">
+        <div
+          class="text-xs text-muted-foreground space-y-1 dark:text-foreground/70"
+        >
           <p>&copy; 2026 Nikko Causapin</p>
           <p>Built with Astro · Commit {buildSha}</p>
         </div>
         <button
           id="back-to-top"
           type="button"
-          class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
+          class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm dark:text-foreground/75 dark:hover:text-foreground"
           aria-label="Back to top"
         >
           Back to top
@@ -299,25 +301,31 @@ const iconPath: Record<string, string> = {
 </section>
 
 <script>
-  document.getElementById('back-to-top')?.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  function initContact() {
+    const backToTop = document.getElementById('back-to-top');
+    backToTop?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
-  const copyButton = document.querySelector('[data-copy-email]');
-  const copyLabel = copyButton?.querySelector('[data-copy-label]');
+    const copyButton = document.querySelector('[data-copy-email]');
+    const copyLabel = copyButton?.querySelector('[data-copy-label]');
 
-  copyButton?.addEventListener('click', async () => {
-    const email = copyButton.getAttribute('data-copy-value') || '';
+    copyButton?.addEventListener('click', async () => {
+      const email = copyButton.getAttribute('data-copy-value') || '';
 
-    try {
-      await navigator.clipboard.writeText(email);
-      if (copyLabel) copyLabel.textContent = 'Email Copied';
-      window.setTimeout(() => {
+      try {
+        await navigator.clipboard.writeText(email);
+        if (copyLabel) copyLabel.textContent = 'Email Copied';
+        window.setTimeout(() => {
+          if (copyLabel) copyLabel.textContent = 'Copy Email';
+        }, 1800);
+      } catch {
         if (copyLabel) copyLabel.textContent = 'Copy Email';
-      }, 1800);
-    } catch {
-      if (copyLabel) copyLabel.textContent = 'Copy Email';
-      window.location.href = `mailto:${email}`;
-    }
-  });
+        window.location.href = `mailto:${email}`;
+      }
+    });
+  }
+
+  initContact();
+  document.addEventListener('astro:after-swap', initContact);
 </script>

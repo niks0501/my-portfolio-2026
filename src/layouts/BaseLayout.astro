@@ -112,13 +112,14 @@ const enableVercelInsights = import.meta.env.VERCEL === '1';
     }
   </head>
   <body>
+    <div class="bg-ambiance" aria-hidden="true"></div>
     <a href="#main" class="skip-link">Skip to content</a>
     <slot />
     {enableVercelInsights && <Analytics />}
     {enableVercelInsights && <SpeedInsights />}
     <script is:inline>
       console.info(
-        'Nikko Causapin portfolio | Source: https://github.com/niks0501 | Email: nikkocausapin61@gmail.com',
+        'Nikko Causapin portfolio | Source: https://github.com/niks0501',
       );
     </script>
   </body>

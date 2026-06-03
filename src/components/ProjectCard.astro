@@ -38,14 +38,14 @@ const isFeatured = variant === 'featured';
   data-categories={categories.join(' ')}
   data-featured={isFeatured ? 'true' : 'false'}
   class:list={[
-    'group relative bg-card border border-border rounded-lg overflow-hidden flex flex-col',
-    'transition-all duration-300 ease-out',
-    'hover:border-primary/30 hover:shadow-xl hover:-translate-y-1',
+    'group relative glass-card overflow-hidden flex flex-col w-full min-w-0',
+    isFeatured
+      ? 'min-h-[520px] border-primary/35 shadow-xl shadow-primary/10 dark:border-primary/55 dark:bg-primary/[0.08]'
+      : 'min-h-[420px] dark:border-white/20',
   ]}
-  style="min-height: 480px;"
 >
   <span
-    class="absolute left-0 top-0 bottom-0 w-[3px]"
+    class="absolute left-0 top-0 bottom-0 w-[3px] z-10"
     style={`background-color: ${accent}`}
     aria-hidden="true"></span>
   <div class="relative overflow-hidden">
@@ -54,10 +54,7 @@ const isFeatured = variant === 'featured';
       alt={`${title} — cover`}
       width={imageWidth}
       height={imageHeight}
-      class:list={[
-        'w-full object-cover',
-        isFeatured ? 'aspect-[16/9]' : 'aspect-[16/9]',
-      ]}
+      class="w-full object-cover aspect-[16/9]"
       loading="lazy"
       decoding="async"
     />
@@ -66,7 +63,7 @@ const isFeatured = variant === 'featured';
     >
       {
         categories.map((cat) => (
-          <span class="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.12em] bg-background/90 backdrop-blur-sm text-foreground px-2 py-0.5 rounded-md border border-border/60">
+          <span class="inline-flex items-center gap-1.5 rounded-md border border-border/70 bg-background/85 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-foreground shadow-sm backdrop-blur-xl dark:border-white/25 dark:bg-background/85">
             <span
               class="w-1.5 h-1.5 rounded-full"
               style={`background-color: ${accent}`}
@@ -85,7 +82,9 @@ const isFeatured = variant === 'featured';
       isFeatured ? 'p-8 lg:p-10' : 'p-6 lg:p-8',
     ]}
   >
-    <div class="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+    <div
+      class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-3 dark:text-foreground/80"
+    >
       <span class="font-heading tabular-nums">{year}</span>
       <span class="text-border" aria-hidden="true">·</span>
       <span>{role}</span>
@@ -107,7 +106,7 @@ const isFeatured = variant === 'featured';
       </span>
       {
         sourceOnly && (
-          <span class="inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-[0.1em] px-2 py-0.5 rounded-full border border-border bg-muted text-muted-foreground">
+          <span class="inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-[0.1em] px-2 py-0.5 rounded-full border border-border bg-muted text-muted-foreground dark:border-white/20 dark:bg-white/10 dark:text-foreground/[0.85]">
             <span
               class="w-1.5 h-1.5 rounded-full bg-muted-foreground"
               aria-hidden="true"
@@ -129,7 +128,7 @@ const isFeatured = variant === 'featured';
 
     <p
       class:list={[
-        'text-muted-foreground mt-3 leading-relaxed',
+        'text-muted-foreground mt-3 leading-relaxed dark:text-foreground/[0.85]',
         isFeatured ? 'text-lg lg:text-xl max-w-2xl' : 'text-base',
       ]}
     >
@@ -140,11 +139,11 @@ const isFeatured = variant === 'featured';
       isFeatured && metrics.length > 0 && (
         <dl class="mt-6 grid grid-cols-3 gap-3 max-w-2xl">
           {metrics.map((metric) => (
-            <div class="border-l-2 border-border pl-3 py-1">
-              <dt class="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+            <div class="border-l-2 border-border pl-3 py-1 dark:border-primary/45">
+              <dt class="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground dark:text-foreground/75">
                 {metric.label}
               </dt>
-              <dd class="text-xl lg:text font-heading font-semibold text-foreground mt-0.5">
+              <dd class="text-xl lg:text-2xl font-heading font-semibold text-foreground mt-0.5">
                 {metric.value}
               </dd>
             </div>
@@ -180,7 +179,7 @@ const isFeatured = variant === 'featured';
       {
         tags.slice(0, isFeatured ? tags.length : 4).map((tag) => (
           <span
-            class={`text-xs ${getToolTagClasses(tag.label)} px-2.5 py-1 rounded-sm inline-flex items-center gap-1.5`}
+            class={`text-xs font-medium ${getToolTagClasses(tag.label)} px-2.5 py-1 rounded-sm inline-flex items-center gap-1.5`}
           >
             <Icon name={tag.icon} class="w-3.5 h-3.5" aria-hidden="true" />
             <span>{tag.label}</span>
@@ -190,7 +189,7 @@ const isFeatured = variant === 'featured';
     </div>
 
     <div
-      class="flex items-center justify-between mt-auto pt-6 border-t border-border"
+      class="flex items-center justify-between mt-auto pt-6 border-t border-[color:var(--glass-border)] dark:border-white/20"
     >
       <a
         href={`/projects/${slug}/`}
@@ -220,7 +219,7 @@ const isFeatured = variant === 'featured';
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`${title} on GitHub`}
-          class="text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+          class="text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm transition-colors inline-flex items-center gap-1.5 cursor-pointer dark:text-foreground/75 dark:hover:text-foreground"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -242,7 +241,7 @@ const isFeatured = variant === 'featured';
               href={liveDemoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              class="text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm transition-colors cursor-pointer"
+              class="text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm transition-colors cursor-pointer dark:text-foreground/75 dark:hover:text-foreground"
             >
               Live demo
             </a>

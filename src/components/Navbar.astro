@@ -9,13 +9,12 @@ const navLinks = [
 
 <nav
   id="navbar"
-  class="fixed top-3 left-3 right-3 z-50 bg-background/80 backdrop-blur-md border border-border rounded-xl shadow-sm transition-all duration-300 lg:left-6 lg:right-6"
+  class="fixed top-3 left-3 right-3 z-50 glass rounded-xl transition-all duration-300 lg:left-6 lg:right-6"
   aria-label="Main navigation"
 >
   <div
     class="max-w-7xl mx-auto px-3 lg:px-5 h-14 flex items-center justify-between gap-3 lg:gap-6"
   >
-    <!-- Left zone: Brand -->
     <a
       href="/"
       class="group flex items-center gap-2.5 shrink-0 rounded-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -36,7 +35,6 @@ const navLinks = [
       </span>
     </a>
 
-    <!-- Center zone: Nav links (desktop) -->
     <div class="hidden md:flex items-center">
       <ul class="flex items-center gap-0.5">
         {
@@ -44,9 +42,9 @@ const navLinks = [
             <li>
               <a
                 href={link.href}
-                class="nav-link relative flex items-baseline gap-1.5 text-sm text-muted-foreground hover:text-foreground px-3 py-2 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                class="nav-link relative flex items-baseline gap-1.5 text-sm text-muted-foreground hover:text-foreground px-3 py-2 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:text-foreground/75 dark:hover:text-foreground"
               >
-                <span class="nav-num font-heading text-[10px] tabular-nums text-muted-foreground/60 group-hover:text-primary/70 transition-colors">
+                <span class="nav-num font-heading text-[10px] tabular-nums text-muted-foreground/60 group-hover:text-primary/70 transition-colors dark:text-foreground/[0.45]">
                   {link.num}
                 </span>
                 <span>{link.label}</span>
@@ -61,10 +59,9 @@ const navLinks = [
       </ul>
     </div>
 
-    <!-- Right zone: Status + CTA -->
     <div class="flex items-center gap-2 lg:gap-3 shrink-0">
       <span
-        class="hidden xl:inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground"
+        class="hidden xl:inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground dark:text-foreground/75"
         aria-hidden="true"
       >
         <span class="relative flex w-1.5 h-1.5" aria-hidden="true">
@@ -78,7 +75,7 @@ const navLinks = [
       <button
         type="button"
         data-theme-toggle
-        class="inline-flex items-center justify-center w-9 h-9 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        class="inline-flex items-center justify-center w-9 h-9 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:text-foreground/75 dark:hover:bg-white/10 dark:hover:text-foreground"
         aria-label="Switch to dark mode"
         aria-pressed="false"
       >
@@ -147,7 +144,7 @@ const navLinks = [
       <button
         id="mobile-menu-btn"
         type="button"
-        class="md:hidden text-muted-foreground hover:text-foreground p-2 cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-md transition-colors"
+        class="md:hidden text-muted-foreground hover:text-foreground p-2 cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-md transition-colors dark:text-foreground/75 dark:hover:text-foreground"
         aria-label="Toggle mobile menu"
         aria-expanded="false"
         aria-controls="mobile-menu"
@@ -190,21 +187,27 @@ const navLinks = [
     </div>
   </div>
 
-  <!-- Mobile menu -->
   <div
     id="mobile-menu"
-    class="md:hidden hidden border-t border-border"
+    class="md:hidden hidden border-t border-[color:var(--glass-border)] dark:border-white/20"
     role="menu"
   >
+    <noscript>
+      <style>
+        #mobile-menu {
+          display: block !important;
+        }
+      </style>
+    </noscript>
     <div class="px-3 py-3 space-y-0.5">
       {
         navLinks.map((link) => (
           <a
             href={link.href}
-            class="nav-link group flex items-baseline gap-2 text-sm text-muted-foreground hover:text-foreground px-3 py-2.5 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            class="nav-link group flex items-baseline gap-2 text-sm text-muted-foreground hover:text-foreground px-3 py-2.5 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:text-foreground/75 dark:hover:text-foreground"
             role="menuitem"
           >
-            <span class="font-heading text-[10px] tabular-nums text-muted-foreground/60">
+            <span class="font-heading text-[10px] tabular-nums text-muted-foreground/60 dark:text-foreground/[0.45]">
               {link.num}
             </span>
             <span>{link.label}</span>
@@ -265,12 +268,6 @@ const navLinks = [
 </style>
 
 <script>
-  const menuBtn = document.getElementById('mobile-menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const menuIconOpen = document.getElementById('menu-icon-open');
-  const menuIconClose = document.getElementById('menu-icon-close');
-  const navbar = document.getElementById('navbar');
-
   function syncThemeControls() {
     const isDark = document.documentElement.classList.contains('dark');
     document.querySelectorAll('[data-theme-toggle]').forEach((toggle) => {
@@ -288,100 +285,175 @@ const navLinks = [
     });
   }
 
-  document.addEventListener('click', (e) => {
-    const toggle = (e.target as HTMLElement)?.closest('[data-theme-toggle]');
-    if (!toggle) return;
+  syncThemeControls();
 
+  document.addEventListener('click', function handleThemeClick(e) {
+    const target = e.target;
+    if (!(target instanceof Element)) return;
+    const toggle = target.closest('[data-theme-toggle]');
+    if (!toggle) return;
     const nextTheme = document.documentElement.classList.contains('dark')
       ? 'light'
       : 'dark';
-
     document.documentElement.classList.toggle('dark', nextTheme === 'dark');
     document.documentElement.dataset.theme = nextTheme;
     localStorage.setItem('theme', nextTheme);
     syncThemeControls();
   });
 
-  syncThemeControls();
-  window.addEventListener('theme-sync', syncThemeControls);
+  let highlightObserver: IntersectionObserver | null = null;
 
-  menuBtn?.addEventListener('click', () => {
-    const isOpen = mobileMenu?.classList.toggle('hidden') === false;
-    menuBtn.setAttribute('aria-expanded', String(isOpen));
-    menuIconOpen?.classList.toggle('hidden', isOpen);
-    menuIconClose?.classList.toggle('hidden', !isOpen);
-  });
+  function setupHighlighting() {
+    if (highlightObserver) {
+      highlightObserver.disconnect();
+      highlightObserver = null;
+    }
 
-  mobileMenu?.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', () => {
-      mobileMenu.classList.add('hidden');
-      menuBtn?.setAttribute('aria-expanded', 'false');
-      menuIconOpen?.classList.remove('hidden');
-      menuIconClose?.classList.add('hidden');
-    });
-  });
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
 
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-link');
+    if (sections.length === 0 || navLinks.length === 0) return;
 
-  const observerOptions = {
-    rootMargin: '-70px 0px -55% 0px',
-    threshold: 0,
-  };
-
-  const highlightObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const id = entry.target.getAttribute('id');
-        navLinks.forEach((link) => {
-          if (link.getAttribute('href')?.endsWith(`#${id}`)) {
-            link.classList.add('is-active');
-            link.setAttribute('aria-current', 'location');
-          } else {
-            link.classList.remove('is-active');
-            link.removeAttribute('aria-current');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            navLinks.forEach((link) => {
+              if (link.getAttribute('href')?.endsWith(`#${id}`)) {
+                link.classList.add('is-active');
+                link.setAttribute('aria-current', 'location');
+              } else {
+                link.classList.remove('is-active');
+                link.removeAttribute('aria-current');
+              }
+            });
           }
         });
-      }
+      },
+      {
+        rootMargin: '-70px 0px -55% 0px',
+        threshold: 0,
+      },
+    );
+
+    highlightObserver = observer;
+    sections.forEach((section) => observer.observe(section));
+  }
+
+  function initMobileMenu() {
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIconOpen = document.getElementById('menu-icon-open');
+    const menuIconClose = document.getElementById('menu-icon-close');
+
+    const existing = menuBtn?.getAttribute('data-listener');
+    if (existing === '1') return;
+
+    menuBtn?.setAttribute('data-listener', '1');
+    menuBtn?.addEventListener('click', () => {
+      if (!mobileMenu) return;
+      const isHidden = mobileMenu.classList.contains('hidden');
+      mobileMenu.classList.toggle('hidden');
+      menuBtn.setAttribute('aria-expanded', String(isHidden));
+      menuIconOpen?.classList.toggle('hidden', isHidden);
+      menuIconClose?.classList.toggle('hidden', !isHidden);
     });
-  }, observerOptions);
 
-  sections.forEach((section) => {
-    highlightObserver.observe(section);
-  });
+    mobileMenu?.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileMenu?.classList.add('hidden');
+        menuBtn?.setAttribute('aria-expanded', 'false');
+        menuIconOpen?.classList.remove('hidden');
+        menuIconClose?.classList.add('hidden');
+      });
+    });
+  }
 
-  const SCROLL_THRESHOLD = 100;
-  const SCROLLED_CLASSES = [
-    'top-1.5',
-    'left-1.5',
-    'right-1.5',
-    'lg:left-3',
-    'lg:right-3',
-    'shadow-md',
-  ];
-  const TOP_CLASSES = [
-    'top-3',
-    'left-3',
-    'right-3',
-    'lg:left-6',
-    'lg:right-6',
-    'shadow-sm',
-  ];
+  let navScrollListener: EventListener | null = null;
 
-  window.addEventListener(
-    'scroll',
-    () => {
-      const currentScrollY = window.scrollY;
-      if (!navbar) return;
+  function initNavScroll() {
+    if (navScrollListener) return;
 
-      if (currentScrollY > SCROLL_THRESHOLD) {
-        navbar.classList.add(...SCROLLED_CLASSES);
-        navbar.classList.remove(...TOP_CLASSES);
-      } else {
-        navbar.classList.remove(...SCROLLED_CLASSES);
-        navbar.classList.add(...TOP_CLASSES);
+    const SCROLLED_CLASSES = [
+      'top-1.5',
+      'left-1.5',
+      'right-1.5',
+      'lg:left-3',
+      'lg:right-3',
+      'shadow-md',
+    ];
+    const TOP_CLASSES = [
+      'top-3',
+      'left-3',
+      'right-3',
+      'lg:left-6',
+      'lg:right-6',
+      'shadow-sm',
+    ];
+
+    let ticking = false;
+
+    navScrollListener = function handleNavScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const navbar = document.getElementById('navbar');
+          if (!navbar) {
+            ticking = false;
+            return;
+          }
+          if (window.scrollY > 100) {
+            navbar.classList.add(...SCROLLED_CLASSES);
+            navbar.classList.remove(...TOP_CLASSES);
+          } else {
+            navbar.classList.remove(...SCROLLED_CLASSES);
+            navbar.classList.add(...TOP_CLASSES);
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
-    },
-    { passive: true },
-  );
+    };
+
+    window.addEventListener('scroll', navScrollListener, { passive: true });
+  }
+
+  function refreshNavPosition() {
+    const navbar = document.getElementById('navbar');
+    if (!navbar) return;
+    const SCROLLED = [
+      'top-1.5',
+      'left-1.5',
+      'right-1.5',
+      'lg:left-3',
+      'lg:right-3',
+      'shadow-md',
+    ];
+    const TOP = [
+      'top-3',
+      'left-3',
+      'right-3',
+      'lg:left-6',
+      'lg:right-6',
+      'shadow-sm',
+    ];
+    if (window.scrollY > 100) {
+      navbar.classList.add(...SCROLLED);
+      navbar.classList.remove(...TOP);
+    } else {
+      navbar.classList.remove(...SCROLLED);
+      navbar.classList.add(...TOP);
+    }
+  }
+
+  setupHighlighting();
+  initMobileMenu();
+  initNavScroll();
+
+  document.addEventListener('astro:after-swap', () => {
+    syncThemeControls();
+    setupHighlighting();
+    initMobileMenu();
+    refreshNavPosition();
+  });
 </script>

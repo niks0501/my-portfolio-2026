@@ -17,11 +17,8 @@ function init() {
       const categories = (card.getAttribute('data-categories') || '')
         .split(' ')
         .filter(Boolean);
-      const featured = card.getAttribute('data-featured') === 'true';
-      const show =
-        filter === 'all' ||
-        categories.includes(filter) ||
-        (filter !== 'all' && featured);
+      const show = filter === 'all' || categories.includes(filter);
+      card.dataset.filterVisible = String(show);
 
       if (reduceMotion) {
         card.classList.toggle('hidden', !show);
@@ -37,7 +34,11 @@ function init() {
       } else {
         card.style.opacity = '0';
         card.style.transform = 'translateY(8px)';
-        const finish = () => card.classList.add('hidden');
+        const finish = () => {
+          if (card.dataset.filterVisible === 'false') {
+            card.classList.add('hidden');
+          }
+        };
         card.addEventListener('transitionend', finish, { once: true });
         setTimeout(finish, 220);
       }
@@ -49,11 +50,9 @@ function init() {
       btn.classList.toggle('bg-foreground', active);
       btn.classList.toggle('text-background', active);
       btn.classList.toggle('border-foreground', active);
-      btn.classList.toggle('bg-card', !active);
+      btn.classList.toggle('glass', !active);
       btn.classList.toggle('text-muted-foreground', !active);
-      btn.classList.toggle('border-border', !active);
       btn.classList.toggle('hover:text-foreground', !active);
-      btn.classList.toggle('hover:bg-muted/40', !active);
     });
   };
 
