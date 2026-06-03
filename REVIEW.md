@@ -42,6 +42,7 @@ Deep review of 7 core Astro components, global CSS, and their shared dependencie
 Additionally, `initNavScroll()` is NOT re-run on `astro:after-swap` (line 406-410 omits it), confirming this is a bug, not just a theoretical concern.
 
 **Fix:**
+
 ```js
 // Navbar.astro script section — replace initNavScroll() with:
 function initNavScroll() {
@@ -49,10 +50,20 @@ function initNavScroll() {
   if (!navbar) return;
 
   const SCROLLED_CLASSES = [
-    'top-1.5', 'left-1.5', 'right-1.5', 'lg:left-3', 'lg:right-3', 'shadow-md',
+    'top-1.5',
+    'left-1.5',
+    'right-1.5',
+    'lg:left-3',
+    'lg:right-3',
+    'shadow-md',
   ];
   const TOP_CLASSES = [
-    'top-3', 'left-3', 'right-3', 'lg:left-6', 'lg:right-6', 'shadow-sm',
+    'top-3',
+    'left-3',
+    'right-3',
+    'lg:left-6',
+    'lg:right-6',
+    'shadow-sm',
   ];
 
   let ticking = false;
@@ -91,7 +102,7 @@ document.addEventListener('astro:after-swap', () => {
   syncThemeControls();
   setupHighlighting();
   initMobileMenu();
-  initNavScroll();  // <-- add this line
+  initNavScroll(); // <-- add this line
 });
 ```
 
@@ -103,13 +114,14 @@ document.addEventListener('astro:after-swap', () => {
 **Issue:** Lines 208-209 open a `<h2>` element, but line 213 closes with `</h3>`. This causes HTML parsing errors; browsers may attempt error recovery but the DOM tree will be malformed. Screen readers and SEO crawlers will see incorrect heading hierarchy.
 
 **Fix:**
+
 ```astro
 <!-- Line 213: change </h3> to </h2> -->
 <h2
   class="text-3xl lg:text-4xl font-semibold leading-tight text-foreground text-balance"
 >
-  Software developer building business systems, analytics platforms,
-  and data-driven applications.
+  Software developer building business systems, analytics platforms, and
+  data-driven applications.
 </h2>
 ```
 
@@ -121,12 +133,11 @@ document.addEventListener('astro:after-swap', () => {
 **Issue:** The ternary `isFeatured ? 'aspect-[16/9]' : 'aspect-[16/9]'` returns the same value regardless of condition. This is either a copy-paste oversight (the standard variant should have a different aspect ratio, e.g., `aspect-[4/3]` or `aspect-[3/2]`) or dead code that should be simplified.
 
 **Fix:**
+
 ```astro
-<!-- If the aspect ratio should differ by variant: -->
-class:list={[
-  'w-full object-cover',
-  isFeatured ? 'aspect-[16/9]' : 'aspect-[4/3]',
-]}
+<!-- If the aspect ratio should differ by variant: -->class:list={
+  ['w-full object-cover', isFeatured ? 'aspect-[16/9]' : 'aspect-[4/3]']
+}
 
 <!-- If they should always be 16/9 (remove the ternary): -->
 class="w-full object-cover aspect-[16/9]"
@@ -142,8 +153,11 @@ class="w-full object-cover aspect-[16/9]"
 **Issue:** Desktop nav links have `<span class="nav-num ...">` so the CSS rules at lines 244-247 (`.nav-link:hover .nav-num`, `.nav-link:focus-visible .nav-num`) apply hover/active color transitions. The mobile menu links (lines 210, but also the repeated pattern at line 47 for all link numbers) lack the `.nav-num` class, so their numbers stay at `text-muted-foreground/60` regardless of interaction state.
 
 **Fix:** Add `nav-num` to the mobile menu number spans:
+
 ```astro
-<span class="nav-num font-heading text-[10px] tabular-nums text-muted-foreground/60">
+<span
+  class="nav-num font-heading text-[10px] tabular-nums text-muted-foreground/60"
+>
   {link.num}
 </span>
 ```
@@ -156,15 +170,16 @@ class="w-full object-cover aspect-[16/9]"
 **Issue:** The `statusDotClasses` mapping is exported but never consumed by any component. ProjectCard.astro (lines 98-103) re-implements the same dot-color logic inline. This is dead code and a DRY violation.
 
 **Fix:** Either remove the export from `projectUtils.ts`, or import and use it in `ProjectCard.astro`:
+
 ```astro
 ---
 import { statusDotClasses } from '../lib/projectUtils';
 ---
+
 <!-- Replace lines 98-103 with: -->
 <span
   class:list={['w-1.5 h-1.5 rounded-full', statusDotClasses[status]]}
-  aria-hidden="true"
-/>
+  aria-hidden="true"></span>
 ```
 
 ---
@@ -173,6 +188,7 @@ import { statusDotClasses } from '../lib/projectUtils';
 
 **File:** `src/styles/global.css:231-233, 239-241, 227-229`
 **Issue:** Three utility classes are defined in `@layer utilities` but never referenced by any component:
+
 - `.section-container` (line 232) — all sections use inline `max-w-*` classes instead
 - `.section-eyebrow` (line 239) — all eyebrow labels use inline `text-xs font-medium uppercase tracking-[0.18em] text-primary`
 - `.focus-ring` (line 227) — all interactive elements use inline `focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background`
@@ -196,9 +212,12 @@ This is dead CSS that increases bundle size and maintenance surface. Either adop
 **Issue:** The back-to-top handler always uses `behavior: 'smooth'`. The global CSS (lines 148-156 and 285-297) disables animations and transitions when `prefers-reduced-motion: reduce` is active, but `scrollTo({ behavior: 'smooth' })` is a browser-level API not affected by CSS. Users with motion sensitivity will still experience smooth scrolling.
 
 **Fix:**
+
 ```js
 backToTop?.addEventListener('click', () => {
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduceMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)',
+  ).matches;
   window.scrollTo({ top: 0, behavior: reduceMotion ? 'instant' : 'smooth' });
 });
 ```
@@ -211,6 +230,7 @@ backToTop?.addEventListener('click', () => {
 **Issue:** When a contact item has `available: false` (or no `href`), the component renders a `<div>` with `aria-disabled="true"`. However, `aria-disabled` is semantically intended for interactive elements (buttons, inputs, links). On a `<div>` that never receives focus, this attribute has no practical effect — screen readers won't announce it as disabled.
 
 **Fix:** If the item is unavailable, either:
+
 - Render it as a `<button disabled>` (if it would normally be interactive), or
 - Simply omit the `aria-disabled` attribute and rely on the `opacity-60 cursor-not-allowed` visual treatment alone.
 
@@ -222,6 +242,7 @@ backToTop?.addEventListener('click', () => {
 **Issue:** The `.glass-card` utility class includes `cursor-pointer`, implying every glass card is clickable. But ServicesSection cards (line 71) override with `cursor-default`, and the non-interactive contact items override with `cursor-default` or `cursor-not-allowed`. A utility default that must be overridden in most usages is a poor default. The `cursor-pointer` belongs on the individual elements that are actually interactive, not on the shared base class.
 
 **Fix:** Remove `cursor-pointer` from `.glass-card` and add it explicitly only to interactive cards:
+
 ```css
 /* .glass-card — remove cursor-pointer */
 .glass-card {
@@ -229,6 +250,7 @@ backToTop?.addEventListener('click', () => {
          transition-[background-color,border-color,box-shadow,transform] duration-300 ease-out;
 }
 ```
+
 Then add `cursor-pointer` to `ProjectCard.astro` (line 41) and `AboutSection.astro` project links (line 265).
 
 ---

@@ -1,10 +1,7 @@
 function isInViewport(el) {
   const rect = el.getBoundingClientRect();
   const threshold = 50;
-  return (
-    rect.top < window.innerHeight - threshold &&
-    rect.bottom > threshold
-  );
+  return rect.top < window.innerHeight - threshold && rect.bottom > threshold;
 }
 
 let scrollObserver = null;
@@ -38,7 +35,9 @@ function init() {
     },
   );
 
-  const elements = document.querySelectorAll('.scroll-reveal, .stagger-children');
+  const elements = document.querySelectorAll(
+    '.scroll-reveal, .stagger-children',
+  );
 
   elements.forEach((el) => {
     if (isInViewport(el)) {

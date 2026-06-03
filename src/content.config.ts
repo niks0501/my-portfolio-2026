@@ -42,10 +42,12 @@ const projects = defineCollection({
     year: z.string(),
     role: z.string(),
     status: z.enum(['live', 'in-progress', 'archived']),
-    accent: z.string().regex(
-    /^oklch\(\s*[\d.]+%?\s+[\d.]+\s+[\d.]+(?:\s*\/\s*[\d.]+%?)?\s*\)$/,
-    'Must be a valid oklch color (e.g. oklch(0.555 0.163 48.998))',
-  ),
+    accent: z
+      .string()
+      .regex(
+        /^oklch\(\s*[\d.]+%?\s+[\d.]+\s+[\d.]+(?:\s*\/\s*[\d.]+%?)?\s*\)$/,
+        'Must be a valid oklch color (e.g. oklch(0.555 0.163 48.998))',
+      ),
     problem: z.string(),
     approach: z.string(),
     result: z.string(),
