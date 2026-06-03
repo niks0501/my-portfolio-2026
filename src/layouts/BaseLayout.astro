@@ -1,0 +1,114 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  image?: string;
+  type?: 'website' | 'article' | 'profile';
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title = 'Nikko Causapin — Software Engineer & Web Developer',
+  description = 'Portfolio of Nikko Causapin, a software engineer and BSIT Business Analytics student building full-stack web apps, internal tools, and data-driven systems.',
+  canonicalPath = Astro.url.pathname,
+  image = '/og-image.png',
+  type = 'website',
+  jsonLd = [],
+} = Astro.props;
+
+const site = Astro.site ?? new URL('https://my-portfolio-2026.vercel.app');
+const canonicalUrl = new URL(canonicalPath, site);
+const imageUrl = new URL(image, site);
+const ldItems = Array.isArray(jsonLd) ? jsonLd : [jsonLd];
+const enableVercelInsights = import.meta.env.VERCEL === '1';
+---
+
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content="index, follow" />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#141414"
+      media="(prefers-color-scheme: dark)"
+    />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl.href} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link
+      rel="preload"
+      as="image"
+      href="/images/profile.webp"
+      fetchpriority="high"
+    />
+
+    <meta property="og:site_name" content="Nikko Causapin" />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl.href} />
+    <meta property="og:image" content={imageUrl.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl.href} />
+
+    <ClientRouter />
+
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia(
+          '(prefers-color-scheme: dark)',
+        ).matches;
+        const theme = stored || (prefersDark ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+
+    {
+      ldItems.map((item) => (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(item)}
+        />
+      ))
+    }
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <slot />
+    {enableVercelInsights && <Analytics />}
+    {enableVercelInsights && <SpeedInsights />}
+    <script is:inline>
+      console.info(
+        'Nikko Causapin portfolio | Source: https://github.com/niks0501 | Email: nikkocausapin61@gmail.com',
+      );
+    </script>
+  </body>
+</html>

@@ -1,0 +1,370 @@
+---
+import { Icon } from 'astro-icon/components';
+import { render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import { getProjectEntries, projectFromEntry } from '../../lib/projects';
+import { getToolTagClasses } from '../../lib/toolStyles';
+import type { Project, ProjectCategory } from '../../types/project';
+
+export async function getStaticPaths() {
+  const entries = await getProjectEntries();
+
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props as { entry: CollectionEntry<'projects'> };
+const project = projectFromEntry(entry);
+const { Content } = await render(entry);
+
+const categoryLabel: Record<ProjectCategory, string> = {
+  'web-app': 'Web App',
+  data: 'Data',
+  tool: 'Tool',
+};
+
+const statusLabel: Record<Project['status'], string> = {
+  live: 'Live',
+  'in-progress': 'In progress',
+  archived: 'Archived',
+};
+
+const statusClasses: Record<Project['status'], string> = {
+  live: 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20',
+  'in-progress':
+    'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20',
+  archived: 'bg-muted text-muted-foreground border-border',
+};
+
+const stackGroupLabel: Record<Project['stack'][number]['group'], string> = {
+  frontend: 'Frontend',
+  backend: 'Backend',
+  data: 'Data',
+};
+
+const stackGroups = project.stack.reduce(
+  (groups, item) => {
+    groups[item.group] = [...(groups[item.group] ?? []), item];
+    return groups;
+  },
+  {} as Record<Project['stack'][number]['group'], Project['stack']>,
+);
+
+const title = `${project.title} — Case Study | Nikko Causapin`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: project.title,
+  description: project.summary,
+  url: new URL(`/projects/${project.slug}/`, Astro.site ?? Astro.url).href,
+  image: new URL(project.image, Astro.site ?? Astro.url).href,
+  author: {
+    '@type': 'Person',
+    name: 'Nikko Causapin',
+    url: Astro.site?.href ?? 'https://my-portfolio-2026.vercel.app',
+  },
+  programmingLanguage: project.stack.map((item) => item.label),
+};
+---
+
+<BaseLayout
+  title={title}
+  description={project.summary}
+  canonicalPath={`/projects/${project.slug}/`}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <Navbar />
+  <main id="main">
+    <article class="pt-24 md:pt-32 pb-20">
+      <div class="max-w-4xl lg:max-w-7xl mx-auto px-6">
+        <a
+          href="/#projects"
+          class="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer"
+        >
+          <Icon name="tabler:arrow-left" class="w-4 h-4" />
+          Back to selected work
+        </a>
+
+        <header class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14">
+          <div class="lg:col-span-7">
+            <div class="flex flex-wrap items-center gap-2 mb-5">
+              {
+                project.categories.map((category) => (
+                  <span class="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.12em] bg-primary/10 text-primary px-2 py-1 rounded-md border border-primary/15">
+                    <span
+                      class="w-1.5 h-1.5 rounded-full"
+                      style={`background-color: ${project.accent}`}
+                      aria-hidden="true"
+                    />
+                    {categoryLabel[category]}
+                  </span>
+                ))
+              }
+              <span
+                class:list={[
+                  'inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-[0.1em] px-2 py-1 rounded-full border',
+                  statusClasses[project.status],
+                ]}
+              >
+                <span
+                  class:list={[
+                    'w-1.5 h-1.5 rounded-full',
+                    project.status === 'live' && 'bg-green-500',
+                    project.status === 'in-progress' && 'bg-amber-500',
+                    project.status === 'archived' && 'bg-muted-foreground',
+                  ]}
+                  aria-hidden="true"></span>
+                {statusLabel[project.status]}
+              </span>
+              {
+                project.sourceOnly && (
+                  <span class="inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-[0.1em] px-2 py-1 rounded-full border border-border bg-muted text-muted-foreground">
+                    Source only
+                  </span>
+                )
+              }
+            </div>
+
+            <p
+              class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-3"
+            >
+              Case study
+            </p>
+            <h1
+              class="text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight text-foreground text-balance"
+            >
+              {project.title}
+            </h1>
+            <p
+              class="text-lg md:text-xl text-muted-foreground leading-relaxed mt-5 max-w-2xl"
+            >
+              {project.summary}
+            </p>
+
+            <div class="flex flex-wrap items-center gap-3 mt-7">
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-md font-medium hover:brightness-90 transition-[filter] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer"
+              >
+                <Icon name="tabler:brand-github" class="w-4 h-4" />
+                View source
+              </a>
+              {
+                project.liveDemoUrl && (
+                  <a
+                    href={project.liveDemoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 border border-border text-foreground px-5 py-2.5 rounded-md font-medium hover:bg-muted transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer"
+                  >
+                    Live demo
+                    <Icon name="tabler:external-link" class="w-4 h-4" />
+                  </a>
+                )
+              }
+            </div>
+          </div>
+
+          <aside class="lg:col-span-5">
+            <dl
+              class="grid grid-cols-3 gap-3 bg-card border border-border rounded-lg p-4 shadow-sm"
+            >
+              {
+                project.metrics.map((metric) => (
+                  <div class="border-l-2 border-border pl-3 py-1">
+                    <dt class="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                      {metric.label}
+                    </dt>
+                    <dd class="text-xl lg:text-2xl font-heading font-semibold text-foreground mt-0.5">
+                      {metric.value}
+                    </dd>
+                  </div>
+                ))
+              }
+            </dl>
+
+            <dl class="grid grid-cols-2 gap-3 mt-3 text-sm">
+              <div class="bg-card border border-border rounded-lg p-4">
+                <dt class="text-xs text-muted-foreground">Year</dt>
+                <dd class="font-heading font-semibold text-foreground mt-1">
+                  {project.year}
+                </dd>
+              </div>
+              <div class="bg-card border border-border rounded-lg p-4">
+                <dt class="text-xs text-muted-foreground">Role</dt>
+                <dd class="font-heading font-semibold text-foreground mt-1">
+                  {project.role}
+                </dd>
+              </div>
+            </dl>
+          </aside>
+        </header>
+
+        <figure
+          class="mt-12 overflow-hidden rounded-xl border border-border bg-muted/30 shadow-sm"
+        >
+          <img
+            src={project.image}
+            alt={`${project.title} dashboard screenshot`}
+            width={project.imageWidth}
+            height={project.imageHeight}
+            class="w-full aspect-[16/9] object-cover"
+            loading="eager"
+            decoding="async"
+          />
+        </figure>
+
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-12">
+          {
+            [
+              ['Problem', project.problem],
+              ['Approach', project.approach],
+              ['Result', project.result],
+            ].map(([label, value]) => (
+              <div class="bg-card border border-border rounded-lg p-5">
+                <h2 class="text-xs font-medium uppercase tracking-[0.18em] text-primary">
+                  {label}
+                </h2>
+                <p class="text-sm text-foreground leading-relaxed mt-3">
+                  {value}
+                </p>
+              </div>
+            ))
+          }
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 mt-14">
+          <div class="lg:col-span-8 space-y-10">
+            <section>
+              <h2
+                class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-3"
+              >
+                Overview
+              </h2>
+              <p class="text-lg text-foreground leading-relaxed">
+                {project.longDescription}
+              </p>
+              <div
+                class="prose prose-neutral dark:prose-invert max-w-none mt-5 text-muted-foreground"
+              >
+                <Content />
+              </div>
+            </section>
+
+            <section>
+              <h2
+                class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-4"
+              >
+                Screenshots
+              </h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {
+                  project.gallery.map((item) => (
+                    <figure class="bg-card border border-border rounded-lg overflow-hidden">
+                      <img
+                        src={item.src}
+                        alt={item.alt}
+                        class="w-full aspect-[16/9] object-cover bg-muted/30"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      {item.caption && (
+                        <figcaption class="text-xs text-muted-foreground px-4 py-3 border-t border-border">
+                          {item.caption}
+                        </figcaption>
+                      )}
+                    </figure>
+                  ))
+                }
+              </div>
+            </section>
+          </div>
+
+          <aside
+            class="lg:col-span-4 space-y-6 lg:sticky lg:top-28 lg:self-start"
+          >
+            <section class="bg-card border border-border rounded-lg p-5">
+              <h2
+                class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-4"
+              >
+                Highlights
+              </h2>
+              <ul class="space-y-3">
+                {
+                  project.highlights.map((item) => (
+                    <li class="flex items-start gap-2 text-sm text-foreground leading-relaxed">
+                      <Icon
+                        name="tabler:check"
+                        class="w-4 h-4 text-primary shrink-0 mt-0.5"
+                      />
+                      <span>{item}</span>
+                    </li>
+                  ))
+                }
+              </ul>
+            </section>
+
+            <section class="bg-card border border-border rounded-lg p-5">
+              <h2
+                class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-4"
+              >
+                Technical challenges
+              </h2>
+              <ul class="space-y-3">
+                {
+                  project.challenges.map((item) => (
+                    <li class="flex items-start gap-2 text-sm text-foreground leading-relaxed">
+                      <Icon
+                        name="tabler:corner-down-right"
+                        class="w-4 h-4 text-primary shrink-0 mt-0.5"
+                      />
+                      <span>{item}</span>
+                    </li>
+                  ))
+                }
+              </ul>
+            </section>
+
+            <section class="bg-card border border-border rounded-lg p-5">
+              <h2
+                class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-4"
+              >
+                Stack
+              </h2>
+              <div class="space-y-4">
+                {
+                  Object.entries(stackGroups).map(([group, items]) => (
+                    <div>
+                      <p class="text-xs text-muted-foreground mb-2">
+                        {
+                          stackGroupLabel[
+                            group as Project['stack'][number]['group']
+                          ]
+                        }
+                      </p>
+                      <div class="flex flex-wrap gap-2">
+                        {items.map((item) => (
+                          <span
+                            class={`text-xs ${getToolTagClasses(item.label)} px-2.5 py-1 rounded-sm font-medium`}
+                          >
+                            {item.label}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                }
+              </div>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </article>
+  </main>
+</BaseLayout>

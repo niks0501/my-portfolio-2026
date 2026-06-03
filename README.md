@@ -1,43 +1,68 @@
-# Astro Starter Kit: Minimal
+# Nikko Causapin Portfolio 2026
 
-```sh
-npm create astro@latest -- --template minimal
+Personal software engineering portfolio built with Astro and Tailwind CSS. The site presents selected web app projects, current focus, certifications, and contact details for recruiters and collaborators.
+
+## Stack
+
+- Astro 6
+- Tailwind CSS 4
+- Astro Content Collections for project case studies
+- Vercel Analytics and Speed Insights
+- Vercel deployment
+
+## Local Development
+
+```bash
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Quality Checks
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+npm run format:check
+npm run check
+npm run build
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Use the combined CI command before pushing:
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+```bash
+npm run ci
+```
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Content
 
-## 🧞 Commands
+Project case studies live in `src/content/projects/`. Each Markdown file defines frontmatter for cards, routes, screenshots, metrics, and Problem / Approach / Result sections.
 
-All commands are run from the root of the project, from a terminal:
+## Deployment
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+The GitHub Actions workflow in `.github/workflows/ci.yml` runs format, Astro type checks, and a production build on pull requests and pushes to `main`.
 
-## 👀 Want to learn more?
+Production deployment uses the Vercel CLI after CI passes. Add these repository secrets in GitHub:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
+The current canonical site URL is set to `https://my-portfolio-2026.vercel.app` in `astro.config.mjs`. Update it when a final Vercel project URL or custom domain is assigned.
+
+## Assets
+
+Publication assets live in `public/`:
+
+- `og-image.png`
+- `apple-touch-icon.png`
+- `manifest.webmanifest`
+- `robots.txt`
+- `resume.pdf`
+
+## Scripts
+
+- `npm run dev` — start Astro dev server
+- `npm run build` — build production site
+- `npm run preview` — preview production build locally
+- `npm run check` — run Astro checks
+- `npm run format` — format files with Prettier
+- `npm run format:check` — verify formatting
+- `npm run ci` — run format check, Astro check, and production build

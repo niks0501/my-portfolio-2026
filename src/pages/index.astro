@@ -1,38 +1,67 @@
 ---
-import '../styles/global.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
 import Navbar from '../components/Navbar.astro';
 import Hero from '../components/Hero.astro';
 import ProjectsSection from '../components/ProjectsSection.astro';
 import AboutSection from '../components/AboutSection.astro';
 import ServicesSection from '../components/ServicesSection.astro';
 import ContactFooter from '../components/ContactFooter.astro';
+
+const title = 'Nikko Causapin — Software Engineer & Web Developer';
+const description =
+  'Portfolio of Nikko Causapin, a BSIT Business Analytics student building full-stack web apps, internal tools, and data-driven systems.';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Nikko Causapin',
+    url: Astro.site?.href ?? 'https://my-portfolio-2026.vercel.app',
+    image: new URL('/images/profile.webp', Astro.site ?? Astro.url).href,
+    email: 'mailto:nikkocausapin61@gmail.com',
+    jobTitle: 'Software Engineer',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Batangas',
+      addressCountry: 'PH',
+    },
+    knowsAbout: [
+      'Full-stack development',
+      'Laravel',
+      'Vue',
+      'React',
+      'MySQL',
+      'Business analytics',
+      'Internal tools',
+    ],
+    sameAs: ['https://github.com/niks0501'],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Nikko Causapin Portfolio',
+    url: Astro.site?.href ?? 'https://my-portfolio-2026.vercel.app',
+    description,
+  },
+];
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Nikko Causapin — Full-Stack Developer</title>
-    <meta
-      name="description"
-      content="Full-stack developer portfolio showcasing web applications with clean UI and analytics-driven features."
-    />
-  </head>
-  <body>
-    <Navbar />
-    <main>
-      <Hero />
-      <ProjectsSection />
-      <AboutSection />
-      <ServicesSection />
-      <ContactFooter />
-    </main>
-    <script>
-      import '../scripts/scroll-reveal.js';
-      import '../scripts/projects-filter.js';
-    </script>
-  </body>
-</html>
+<BaseLayout
+  title={title}
+  description={description}
+  type="profile"
+  jsonLd={jsonLd}
+>
+  <Navbar />
+  <main id="main">
+    <Hero />
+    <ProjectsSection />
+    <AboutSection />
+    <ServicesSection />
+    <ContactFooter />
+  </main>
+  <script>
+    import '../scripts/scroll-reveal.js';
+    import '../scripts/projects-filter.js';
+  </script>
+</BaseLayout>

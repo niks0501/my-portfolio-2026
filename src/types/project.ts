@@ -29,13 +29,19 @@ export interface Project {
   stack: ProjectStackItem[];
   metrics: ProjectMetric[];
   image: string;
+  imageWidth: number;
+  imageHeight: number;
   gallery: ProjectGalleryItem[];
   githubUrl: string;
   liveDemoUrl: string | null;
+  sourceOnly: boolean;
   featured: boolean;
   categories: ProjectCategory[];
   year: string;
   role: string;
   status: ProjectStatus;
   accent: string;
+  problem: string;
+  approach: string;
+  result: string;
 }

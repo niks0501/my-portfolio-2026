@@ -1,0 +1,77 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 1985 >>
+stream
+BT
+/F1 22 Tf
+1 0 0 1 72 790 Tm (Nikko Causapin) Tj
+/F1 13 Tf
+1 0 0 1 72 764 Tm (Software Engineer & Web Developer) Tj
+/F1 10 Tf
+1 0 0 1 72 746 Tm (Batangas, Philippines (GMT+8) | nikkocausapin61@gmail.com | github.com/niks0501) Tj
+/F1 12 Tf
+1 0 0 1 72 721 Tm (PROFILE) Tj
+/F1 10 Tf
+1 0 0 1 72 703 Tm (BSIT Business Analytics student building full-stack web apps, internal tools, and data-driven systems.) Tj
+/F1 10 Tf
+1 0 0 1 72 688 Tm (Focused on practical workflows, clean UI implementation, analytics dashboards, and maintainable code.) Tj
+/F1 12 Tf
+1 0 0 1 72 663 Tm (SELECTED PROJECTS) Tj
+/F1 10 Tf
+1 0 0 1 72 645 Tm (Pig-Sikap - Laravel, Vue, MySQL, Tailwind. Farm operations system for inventory, health records, expenses, sales, and profitability reporting.) Tj
+/F1 10 Tf
+1 0 0 1 72 630 Tm (Dirty2Data - Laravel, Inertia, React, TypeScript. Data cleaning and analytics workflow for profiling CSVs, reversible transforms, and dashboards.) Tj
+/F1 10 Tf
+1 0 0 1 72 615 Tm (LumbanganSystem - PHP, MySQL, Bootstrap, MVC. Barangay management system for resident records, document requests, and service workflows.) Tj
+/F1 12 Tf
+1 0 0 1 72 590 Tm (TECHNOLOGIES) Tj
+/F1 10 Tf
+1 0 0 1 72 572 Tm (Frontend: Astro, Vue, React, Tailwind CSS) Tj
+/F1 10 Tf
+1 0 0 1 72 557 Tm (Backend: Laravel, PHP, Java, JavaFX) Tj
+/F1 10 Tf
+1 0 0 1 72 542 Tm (Data: MySQL, Power BI, KNIME) Tj
+/F1 10 Tf
+1 0 0 1 72 527 Tm (Tools: Git, GitHub, networking fundamentals, AI-assisted development workflows) Tj
+/F1 12 Tf
+1 0 0 1 72 502 Tm (CERTIFICATIONS) Tj
+/F1 10 Tf
+1 0 0 1 72 484 Tm (Microsoft Office Specialist - Excel) Tj
+/F1 10 Tf
+1 0 0 1 72 469 Tm (IT Specialist - Data Analytics) Tj
+/F1 10 Tf
+1 0 0 1 72 454 Tm (IT Specialist - Device Configuration and Management) Tj
+/F1 10 Tf
+1 0 0 1 72 439 Tm (IT Specialist - Databases) Tj
+/F1 12 Tf
+1 0 0 1 72 414 Tm (OPEN TO) Tj
+/F1 10 Tf
+1 0 0 1 72 396 Tm (Internships, junior developer roles, academic collaborations, and small system development projects.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000002278 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2348
+%%EOF

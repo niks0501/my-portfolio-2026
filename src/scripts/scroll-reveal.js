@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.querySelectorAll('.scroll-reveal, .stagger-children').forEach((el) => {
-      el.classList.add('revealed');
-    });
+    document
+      .querySelectorAll('.scroll-reveal, .stagger-children')
+      .forEach((el) => {
+        el.classList.add('revealed');
+      });
     return;
   }
 
@@ -20,7 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, observerOptions);
 
-  document.querySelectorAll('.scroll-reveal, .stagger-children').forEach((el) => {
-    observer.observe(el);
-  });
+  document
+    .querySelectorAll('.scroll-reveal, .stagger-children')
+    .forEach((el) => {
+      observer.observe(el);
+    });
 });

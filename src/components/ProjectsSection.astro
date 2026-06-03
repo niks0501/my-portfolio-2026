@@ -1,236 +1,9 @@
 ---
 import ProjectCard from './ProjectCard.astro';
-import ProjectModal from './ProjectModal.astro';
-import type { Project, ProjectCategory } from '../types/project';
+import { getProjects } from '../lib/projects';
+import type { ProjectCategory } from '../types/project';
 
-const projects: Project[] = [
-  {
-    slug: 'pig-sikap',
-    title: 'Pig-Sikap',
-    summary:
-      'A web-based system that helps pig farmers manage inventory, health records, expenses, sales, reports, and profitability insights.',
-    longDescription:
-      'Pig-Sikap is a full-stack farm management platform built for small-to-mid scale swine operations. It tracks every pig through its growth cycle, logs health interventions, records expenses and sales, and produces profitability and profit-sharing reports that the operation owner can act on. The dashboard surfaces the metrics that matter most to a working farm — mortality rate, feed cost per kilo, and realized margin per cycle.',
-    highlights: [
-      'Pig inventory and cycle management',
-      'Health records and health task tracking',
-      'Profitability and profit-sharing reports',
-    ],
-    challenges: [
-      'Modeling multi-pig cycles with shared expenses and shared revenue splits',
-      'Designing a dashboard that surfaces profitability without overwhelming a non-technical user',
-    ],
-    tags: [
-      { label: 'Laravel', icon: 'tabler:brand-laravel' },
-      { label: 'Vue', icon: 'tabler:brand-vue' },
-      { label: 'Tailwind', icon: 'tabler:brand-tailwind' },
-      { label: 'MySQL', icon: 'tabler:database' },
-      { label: 'Analytics', icon: 'tabler:chart-bar' },
-      { label: 'Livestock Mgmt', icon: 'tabler:paw' },
-    ],
-    stack: [
-      { label: 'Laravel', group: 'backend' },
-      { label: 'MySQL', group: 'data' },
-      { label: 'Vue', group: 'frontend' },
-      { label: 'Tailwind', group: 'frontend' },
-    ],
-    metrics: [
-      { value: '12+', label: 'Active farms' },
-      { value: '6', label: 'Module areas' },
-      { value: 'Live', label: 'Production' },
-    ],
-    image: '/images/projects/pig-sikap/dashboard.png',
-    gallery: [
-      {
-        src: '/images/projects/pig-sikap/dashboard.png',
-        alt: 'Pig-Sikap dashboard',
-        caption: 'Dashboard with cycle and profitability overview',
-      },
-      {
-        src: '/images/projects/pig-sikap/analytics.png',
-        alt: 'Pig-Sikap analytics',
-        caption: 'Per-cycle analytics and growth metrics',
-      },
-      {
-        src: '/images/projects/pig-sikap/health.png',
-        alt: 'Health records',
-        caption: 'Health interventions and task tracking',
-      },
-      {
-        src: '/images/projects/pig-sikap/expenses.png',
-        alt: 'Expense tracking',
-        caption: 'Feed, medication, and overhead entries',
-      },
-      {
-        src: '/images/projects/pig-sikap/profitability.png',
-        alt: 'Profitability report',
-        caption: 'Margin per cycle and profit-share preview',
-      },
-      {
-        src: '/images/projects/pig-sikap/reports.png',
-        alt: 'Operational reports',
-        caption: 'Exportable reports for the farm owner',
-      },
-    ],
-    githubUrl: 'https://github.com/niks0501/pig-sikap',
-    liveDemoUrl: null,
-    featured: true,
-    categories: ['web-app'],
-    year: '2025',
-    role: 'Solo build',
-    status: 'live',
-    accent: 'oklch(0.555 0.163 48.998)',
-  },
-  {
-    slug: 'dirty2data',
-    title: 'Dirty2Data',
-    summary:
-      'A Laravel + Inertia + React data cleaning and analytics system for uploading, profiling, cleaning, analyzing, and visualizing datasets.',
-    longDescription:
-      'Dirty2Data turns messy CSVs into trustworthy datasets. Users upload a file, the system profiles columns and surfaces quality issues, applies cleaning transformations with one-click recommendations and a full undo history, then drops the cleaned data into a dashboard builder with charts and exportable insights. The focus is on making the cleaning step feel safe and reversible.',
-    highlights: [
-      'Dataset upload and profiling',
-      'Cleaning workflow with recommendations and undo',
-      'Analytics dashboards, visualizations, and insights',
-    ],
-    challenges: [
-      'Designing an undo/redo system that works across the cleaning pipeline without re-running expensive transforms',
-      'Surfacing data quality issues in a way non-technical users can act on',
-    ],
-    tags: [
-      { label: 'Laravel', icon: 'tabler:brand-laravel' },
-      { label: 'Inertia', icon: 'tabler:brand-inertia' },
-      { label: 'React', icon: 'tabler:brand-react' },
-      { label: 'TypeScript', icon: 'tabler:brand-typescript' },
-      { label: 'Tailwind', icon: 'tabler:brand-tailwind' },
-      { label: 'Data Analytics', icon: 'tabler:chart-dots' },
-    ],
-    stack: [
-      { label: 'Laravel', group: 'backend' },
-      { label: 'Inertia', group: 'backend' },
-      { label: 'React', group: 'frontend' },
-      { label: 'TypeScript', group: 'frontend' },
-      { label: 'Tailwind', group: 'frontend' },
-    ],
-    metrics: [
-      { value: 'CSV', label: 'Upload pipeline' },
-      { value: 'Undo', label: 'Cleaning history' },
-      { value: 'In dev', label: 'Status' },
-    ],
-    image: '/images/projects/dirty2data/dashboard.png',
-    gallery: [
-      {
-        src: '/images/projects/dirty2data/dashboard.png',
-        alt: 'Dirty2Data dashboard',
-        caption: 'Cleaning workflow with profiling and recommendations',
-      },
-      {
-        src: '/images/projects/dirty2data/data-profile.png',
-        alt: 'Data profile view',
-        caption: 'Column-level profiling with quality issue flags',
-      },
-      {
-        src: '/images/projects/dirty2data/cleaning-engine.png',
-        alt: 'Cleaning engine',
-        caption: 'One-click cleaning transforms with full undo history',
-      },
-      {
-        src: '/images/projects/dirty2data/original-vs-cleaned.png',
-        alt: 'Original vs cleaned comparison',
-        caption: 'Side-by-side diff of raw and cleaned data',
-      },
-      {
-        src: '/images/projects/dirty2data/insight-generation.png',
-        alt: 'Insight generation',
-        caption: 'Auto-generated insights from cleaned datasets',
-      },
-      {
-        src: '/images/projects/dirty2data/visualize.png',
-        alt: 'Visualization builder',
-        caption: 'Dashboard builder with chart and export options',
-      },
-    ],
-    githubUrl: 'https://github.com/niks0501/dirty2data',
-    liveDemoUrl: null,
-    featured: false,
-    categories: ['web-app', 'tool', 'data'],
-    year: '2025',
-    role: 'Solo build',
-    status: 'live',
-    accent: 'oklch(0.585 0.233 277.117)',
-  },
-  {
-    slug: 'lumbangan-system',
-    title: 'LumbanganSystem',
-    summary:
-      'A web-based Barangay Management Information System for resident records, document requests, approvals, and barangay service workflows.',
-    longDescription:
-      'LumbanganSystem digitizes day-to-day barangay operations: resident records, document requests (clearances, certifications), approvals, and operational reporting. The admin dashboard tracks request volume, approval turnaround, and document-type breakdowns so staff can spot bottlenecks and constituents get a clear answer on where their request stands.',
-    highlights: [
-      'Document requests with status tracking',
-      'Document types/templates and proof uploads',
-      'Admin dashboard and statistics',
-    ],
-    challenges: [
-      'Modeling document request states and template variants without a rigid schema',
-      'Keeping the admin dashboard responsive under thousands of historical records',
-    ],
-    tags: [
-      { label: 'PHP', icon: 'tabler:brand-php' },
-      { label: 'MySQL', icon: 'tabler:database' },
-      { label: 'MVC', icon: 'tabler:code' },
-      { label: 'Bootstrap', icon: 'tabler:brand-bootstrap' },
-      { label: 'Barangay System', icon: 'tabler:building-community' },
-    ],
-    stack: [
-      { label: 'PHP', group: 'backend' },
-      { label: 'MySQL', group: 'data' },
-      { label: 'Bootstrap', group: 'frontend' },
-      { label: 'MVC', group: 'backend' },
-    ],
-    metrics: [
-      { value: 'Records', label: 'Residents' },
-      { value: 'Templates', label: 'Documents' },
-      { value: 'Live', label: 'Production' },
-    ],
-    image: '/images/projects/lumbangan-system/dashboard.png',
-    gallery: [
-      {
-        src: '/images/projects/lumbangan-system/dashboard.png',
-        alt: 'LumbanganSystem dashboard',
-        caption: 'Admin dashboard with request status and statistics',
-      },
-      {
-        src: '/images/projects/lumbangan-system/resident-dashboard.png',
-        alt: 'Resident dashboard',
-        caption: 'Constituent-facing dashboard for request tracking',
-      },
-      {
-        src: '/images/projects/lumbangan-system/document-request.png',
-        alt: 'Document request form',
-        caption: 'Clearance and certification request workflow',
-      },
-      {
-        src: '/images/projects/lumbangan-system/recent-acts.png',
-        alt: 'Recent activity log',
-        caption: 'Audit trail of barangay actions and approvals',
-      },
-      {
-        src: '/images/projects/lumbangan-system/survey.png',
-        alt: 'Survey module',
-        caption: 'Community survey builder and response analytics',
-      },
-    ],
-    githubUrl: 'https://github.com/alfredD-12/LumbanganSystem',
-    liveDemoUrl: null,
-    featured: false,
-    categories: ['web-app'],
-    year: '2024',
-    role: 'Team build',
-    status: 'live',
-    accent: 'oklch(0.585 0.233 277.117)',
-  },
-];
+const projects = await getProjects();
 
 const filters: { id: 'all' | ProjectCategory; label: string }[] = [
   { id: 'all', label: 'All' },
@@ -240,16 +13,21 @@ const filters: { id: 'all' | ProjectCategory; label: string }[] = [
 ];
 ---
 
-<section id="projects" class="scroll-reveal bg-gradient-to-b from-primary/[0.035] via-primary/[0.02] to-transparent">
+<section
+  id="projects"
+  class="scroll-reveal bg-gradient-to-b from-primary/[0.035] via-primary/[0.02] to-transparent"
+>
   <div class="max-w-4xl lg:max-w-7xl mx-auto px-6 py-16">
-    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-8">
+    <div
+      class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-8"
+    >
       <div>
-        <p class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-3">
+        <p
+          class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-3"
+        >
           Selected work
         </p>
-        <h2
-          class="text-2xl font-semibold leading-tight text-foreground"
-        >
+        <h2 class="text-2xl font-semibold leading-tight text-foreground">
           Projects
         </h2>
         <p class="text-base text-muted-foreground mt-2 max-w-xl">
@@ -290,9 +68,14 @@ const filters: { id: 'all' | ProjectCategory; label: string }[] = [
       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 stagger-children"
       data-projects-grid
     >
-      {projects.map((project) => <ProjectCard {...project} />)}
+      {
+        projects.map((project) => (
+          <ProjectCard
+            {...project}
+            variant={project.featured ? 'featured' : 'standard'}
+          />
+        ))
+      }
     </div>
   </div>
 </section>
-
-<ProjectModal projects={projects} />

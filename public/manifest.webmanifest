@@ -1,0 +1,24 @@
+{
+  "name": "Nikko Causapin Portfolio",
+  "short_name": "Nikko Causapin",
+  "description": "Software engineer portfolio showcasing full-stack web apps, internal tools, and data-driven systems.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#9f5a1c",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -4,9 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!filterContainer || !grid) return;
 
   const cards = Array.from(grid.querySelectorAll('[data-project-card]'));
-  const buttons = Array.from(filterContainer.querySelectorAll('button[data-filter]'));
+  const buttons = Array.from(
+    filterContainer.querySelectorAll('button[data-filter]'),
+  );
 
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduceMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)',
+  ).matches;
 
   const apply = (filter) => {
     cards.forEach((card) => {

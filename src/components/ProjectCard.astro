@@ -14,8 +14,11 @@ const {
   highlights,
   tags,
   image,
+  imageWidth,
+  imageHeight,
   githubUrl,
   liveDemoUrl,
+  sourceOnly,
   categories,
   year,
   role,
@@ -53,7 +56,7 @@ const categoryLabel: Record<Project['categories'][number], string> = {
   data-categories={categories.join(' ')}
   data-featured={isFeatured ? 'true' : 'false'}
   class:list={[
-    'group bg-card border border-border rounded-lg overflow-hidden flex flex-col',
+    'group relative bg-card border border-border rounded-lg overflow-hidden flex flex-col',
     'transition-all duration-300 ease-out',
     'hover:border-primary/30 hover:shadow-xl hover:-translate-y-1',
     isFeatured && 'lg:col-span-2',
@@ -62,12 +65,13 @@ const categoryLabel: Record<Project['categories'][number], string> = {
   <span
     class="absolute left-0 top-0 bottom-0 w-[3px]"
     style={`background-color: ${accent}`}
-    aria-hidden="true"
-  />
+    aria-hidden="true"></span>
   <div class="relative overflow-hidden">
     <img
       src={image}
       alt={`${title} — cover`}
+      width={imageWidth}
+      height={imageHeight}
       class:list={[
         'w-full object-cover',
         isFeatured ? 'aspect-[16/9]' : 'aspect-[16/9]',
@@ -75,17 +79,21 @@ const categoryLabel: Record<Project['categories'][number], string> = {
       loading="lazy"
       decoding="async"
     />
-    <div class="absolute top-3 left-3 flex flex-wrap items-center gap-1.5 max-w-[calc(100%-1.5rem)]">
-      {categories.map((cat) => (
-        <span class="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.12em] bg-background/85 backdrop-blur-sm text-foreground px-2 py-0.5 rounded-md border border-border/60">
-          <span
-            class="w-1.5 h-1.5 rounded-full"
-            style={`background-color: ${accent}`}
-            aria-hidden="true"
-          />
-          {categoryLabel[cat]}
-        </span>
-      ))}
+    <div
+      class="absolute top-3 left-3 flex flex-wrap items-center gap-1.5 max-w-[calc(100%-1.5rem)]"
+    >
+      {
+        categories.map((cat) => (
+          <span class="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.12em] bg-background/90 backdrop-blur-sm text-foreground px-2 py-0.5 rounded-md border border-border/60">
+            <span
+              class="w-1.5 h-1.5 rounded-full"
+              style={`background-color: ${accent}`}
+              aria-hidden="true"
+            />
+            {categoryLabel[cat]}
+          </span>
+        ))
+      }
     </div>
   </div>
 
@@ -112,10 +120,20 @@ const categoryLabel: Record<Project['categories'][number], string> = {
             status === 'in-progress' && 'bg-amber-500',
             status === 'archived' && 'bg-muted-foreground',
           ]}
-          aria-hidden="true"
-        />
+          aria-hidden="true"></span>
         {statusLabel[status]}
       </span>
+      {
+        sourceOnly && (
+          <span class="inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-[0.1em] px-2 py-0.5 rounded-full border border-border bg-muted text-muted-foreground">
+            <span
+              class="w-1.5 h-1.5 rounded-full bg-muted-foreground"
+              aria-hidden="true"
+            />
+            Source only
+          </span>
+        )
+      }
     </div>
 
     <h3
@@ -159,39 +177,44 @@ const categoryLabel: Record<Project['categories'][number], string> = {
         isFeatured && 'max-w-2xl',
       ]}
     >
-      {highlights.map((item) => (
-        <li class="text-foreground flex items-start gap-2 leading-relaxed">
-          <Icon
-            name="tabler:check"
-            class:list={[
-              'shrink-0 mt-0.5 text-primary',
-              isFeatured ? 'w-5 h-5' : 'w-4 h-4',
-            ]}
-          />
-          <span class={isFeatured ? 'text-base' : 'text-sm'}>{item}</span>
-        </li>
-      ))}
+      {
+        highlights.map((item) => (
+          <li class="text-foreground flex items-start gap-2 leading-relaxed">
+            <Icon
+              name="tabler:check"
+              class:list={[
+                'shrink-0 mt-0.5 text-primary',
+                isFeatured ? 'w-5 h-5' : 'w-4 h-4',
+              ]}
+            />
+            <span class={isFeatured ? 'text-base' : 'text-sm'}>{item}</span>
+          </li>
+        ))
+      }
     </ul>
 
     <div class="flex flex-wrap gap-2 mt-5">
-      {tags.slice(0, isFeatured ? tags.length : 4).map((tag) => (
-        <span class={`text-xs ${getToolTagClasses(tag.label)} px-2.5 py-1 rounded-sm inline-flex items-center gap-1.5`}>
-          <Icon name={tag.icon} class="w-3.5 h-3.5" />
-          <span>{tag.label}</span>
-        </span>
-      ))}
+      {
+        tags.slice(0, isFeatured ? tags.length : 4).map((tag) => (
+          <span
+            class={`text-xs ${getToolTagClasses(tag.label)} px-2.5 py-1 rounded-sm inline-flex items-center gap-1.5`}
+          >
+            <Icon name={tag.icon} class="w-3.5 h-3.5" />
+            <span>{tag.label}</span>
+          </span>
+        ))
+      }
     </div>
 
     <div
       class="flex items-center justify-between mt-auto pt-6 border-t border-border"
     >
-      <button
-        type="button"
-        data-project-trigger={slug}
-        aria-label={`Open case study for ${title}`}
+      <a
+        href={`/projects/${slug}/`}
+        aria-label={`Read case study for ${title}`}
         class="inline-flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm transition-colors cursor-pointer"
       >
-        View case study
+        Read case study
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="14"
@@ -207,14 +230,14 @@ const categoryLabel: Record<Project['categories'][number], string> = {
           <line x1="5" y1="12" x2="19" y2="12"></line>
           <polyline points="12 5 19 12 12 19"></polyline>
         </svg>
-      </button>
+      </a>
       <div class="flex items-center gap-4">
         <a
           href={githubUrl}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`${title} on GitHub`}
-          class="text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm transition-colors inline-flex items-center gap-1.5"
+          class="text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm transition-colors inline-flex items-center gap-1.5 cursor-pointer"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -236,7 +259,7 @@ const categoryLabel: Record<Project['categories'][number], string> = {
               href={liveDemoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              class="text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm transition-colors"
+              class="text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm transition-colors cursor-pointer"
             >
               Live demo
             </a>
