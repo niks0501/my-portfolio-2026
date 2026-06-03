@@ -11,6 +11,9 @@ export default defineConfig({
   trailingSlash: 'always',
   prefetch: true,
   output: 'static',
+  devToolbar: {
+    enabled: false,
+  },
 
   vite: {
     plugins: [tailwindcss()],
