@@ -1,6 +1,8 @@
 ---
 import { Icon } from 'astro-icon/components';
 import ProfileThemeImage from './ProfileThemeImage.astro';
+import { BADGES, EMAIL } from '../lib/constants';
+import { serializeJsonLd } from '../lib/seo';
 ---
 
 <section
@@ -64,86 +66,29 @@ import ProfileThemeImage from './ProfileThemeImage.astro';
         <div
           class="flex flex-wrap gap-5 md:gap-8 mt-7 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-forwards delay-350"
         >
-          <button
-            type="button"
-            data-badge-index="0"
-            class="flex flex-col items-center gap-1.5 cursor-pointer"
-            aria-label="View Microsoft Office Specialist Excel badge"
-          >
-            <img
-              src="/images/badges/microsoft-office-specialist-excel-office-2016.png"
-              alt="Microsoft Office Specialist — Excel"
-              width="64"
-              height="64"
-              class="w-16 h-16"
-              loading="lazy"
-            />
-            <span
-              class="text-sm text-muted-foreground text-center leading-tight cursor-text dark:text-foreground/[0.85]"
-            >
-              MOS<br />Excel
-            </span>
-          </button>
-          <button
-            type="button"
-            data-badge-index="1"
-            class="flex flex-col items-center gap-1.5 cursor-pointer"
-            aria-label="View IT Specialist Data Analytics badge"
-          >
-            <img
-              src="/images/badges/it-specialist-data-analytics.png"
-              alt="IT Specialist — Data Analytics"
-              width="64"
-              height="64"
-              class="w-16 h-16"
-              loading="lazy"
-            />
-            <span
-              class="text-sm text-muted-foreground text-center leading-tight cursor-text dark:text-foreground/[0.85]"
-            >
-              Data<br />Analytics
-            </span>
-          </button>
-          <button
-            type="button"
-            data-badge-index="2"
-            class="flex flex-col items-center gap-1.5 cursor-pointer"
-            aria-label="View IT Specialist Device Configuration and Management badge"
-          >
-            <img
-              src="/images/badges/it-specialist-device-configuration-and-management.png"
-              alt="IT Specialist — Device Configuration and Management"
-              width="64"
-              height="64"
-              class="w-16 h-16"
-              loading="lazy"
-            />
-            <span
-              class="text-sm text-muted-foreground text-center leading-tight cursor-text dark:text-foreground/[0.85]"
-            >
-              Device Config<br />&amp; Management
-            </span>
-          </button>
-          <button
-            type="button"
-            data-badge-index="3"
-            class="flex flex-col items-center gap-1.5 cursor-pointer"
-            aria-label="View IT Specialist Databases badge"
-          >
-            <img
-              src="/images/badges/it-specialist-databases.png"
-              alt="IT Specialist — Databases"
-              width="64"
-              height="64"
-              class="w-16 h-16"
-              loading="lazy"
-            />
-            <span
-              class="text-sm text-muted-foreground text-center leading-tight cursor-text dark:text-foreground/[0.85]"
-            >
-              Databases
-            </span>
-          </button>
+          {
+            BADGES.map((badge, index) => (
+              <button
+                type="button"
+                data-badge-index={index}
+                class="flex flex-col items-center gap-1.5 cursor-pointer"
+                aria-label={`View ${badge.name} badge`}
+              >
+                <img
+                  src={badge.src}
+                  alt={badge.name}
+                  width="64"
+                  height="64"
+                  class="w-16 h-16"
+                  loading="lazy"
+                />
+                <span
+                  class="text-sm text-muted-foreground text-center leading-tight cursor-text dark:text-foreground/[0.85]"
+                  set:html={badge.label}
+                />
+              </button>
+            ))
+          }
         </div>
 
         <div
@@ -156,7 +101,7 @@ import ProfileThemeImage from './ProfileThemeImage.astro';
             View My Projects
           </a>
           <a
-            href="mailto:nikkocausapin61@gmail.com"
+            href={`mailto:${EMAIL}`}
             class="inline-flex items-center border border-border text-foreground px-6 py-3 rounded-md text-base font-medium hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-colors cursor-pointer"
           >
             Get in Touch
@@ -303,7 +248,6 @@ import ProfileThemeImage from './ProfileThemeImage.astro';
         >
           <img
             id="modal-img"
-            src=""
             alt=""
             class="max-w-full max-h-full object-contain rounded-lg"
           />
@@ -324,7 +268,7 @@ import ProfileThemeImage from './ProfileThemeImage.astro';
       <div class="flex items-center gap-2">
         <div id="modal-dots" class="flex gap-1.5"></div>
         <span id="modal-counter" class="text-xs text-muted-foreground ml-1"
-          >1 / 4</span
+          >1 / {BADGES.length}</span
         >
       </div>
     </div>
@@ -379,33 +323,29 @@ import ProfileThemeImage from './ProfileThemeImage.astro';
   }
 </style>
 
-<script>
-  function initBadgeGallery() {
-    const badges = [
-      {
-        src: '/images/badges/microsoft-office-specialist-excel-office-2016.png',
-        name: 'Microsoft Office Specialist \u2014 Excel',
-        category: 'Microsoft Office Specialist',
-      },
-      {
-        src: '/images/badges/it-specialist-data-analytics.png',
-        name: 'IT Specialist \u2014 Data Analytics',
-        category: 'IT Specialist',
-      },
-      {
-        src: '/images/badges/it-specialist-device-configuration-and-management.png',
-        name: 'IT Specialist \u2014 Device Configuration and Management',
-        category: 'IT Specialist',
-      },
-      {
-        src: '/images/badges/it-specialist-databases.png',
-        name: 'IT Specialist \u2014 Databases',
-        category: 'IT Specialist',
-      },
-    ];
+<script
+  is:inline
+  id="badge-data"
+  type="application/json"
+  set:html={serializeJsonLd(BADGES)}
+/>
 
+<script>
+  type Badge = {
+    src: string;
+    name: string;
+    category: string;
+  };
+
+  function initBadgeGallery() {
     let currentIndex = 0;
     const dialog = document.getElementById('badge-modal');
+    if (dialog?.dataset.badgeGalleryInitialized === 'true') return;
+
+    const dataEl = document.getElementById('badge-data');
+    const badges = dataEl?.textContent
+      ? (JSON.parse(dataEl.textContent) as Badge[])
+      : [];
     const img = document.getElementById('modal-img');
     const title = document.getElementById('modal-title');
     const categoryEl = document.getElementById('modal-category');
@@ -414,12 +354,14 @@ import ProfileThemeImage from './ProfileThemeImage.astro';
 
     if (
       !(dialog instanceof HTMLDialogElement) ||
-      !(img instanceof HTMLImageElement)
+      !(img instanceof HTMLImageElement) ||
+      !badges.length
     )
       return;
 
     const badgeDialog = dialog;
     const modalImg = img;
+    badgeDialog.dataset.badgeGalleryInitialized = 'true';
 
     function buildDots() {
       if (!dots) return;

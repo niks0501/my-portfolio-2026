@@ -10,10 +10,18 @@ export const projectFromEntry = (entry: ProjectEntry): Project => ({
 
 export const getProjects = async () => {
   const entries = await getCollection('projects');
+  const projects = entries.map(projectFromEntry);
+  const featuredProjects = projects.filter((project) => project.featured);
 
-  return entries
-    .map(projectFromEntry)
-    .sort((a, b) => Number(b.year) - Number(a.year));
+  if (featuredProjects.length > 1) {
+    throw new Error(
+      `Only one featured project is allowed. Found: ${featuredProjects
+        .map((project) => project.slug)
+        .join(', ')}`,
+    );
+  }
+
+  return projects.sort((a, b) => Number(b.year) - Number(a.year));
 };
 
 export const getProjectEntries = async () => getCollection('projects');

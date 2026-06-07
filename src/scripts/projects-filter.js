@@ -2,6 +2,8 @@ function init() {
   const filterContainer = document.querySelector('[data-projects-filters]');
   const grid = document.querySelector('[data-projects-grid]');
   if (!filterContainer || !grid) return;
+  if (filterContainer.dataset.projectsFilterInitialized === 'true') return;
+  filterContainer.dataset.projectsFilterInitialized = 'true';
 
   const cards = Array.from(grid.querySelectorAll('[data-project-card]'));
   const buttons = Array.from(

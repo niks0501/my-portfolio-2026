@@ -6,44 +6,13 @@ import ProjectsSection from '../components/ProjectsSection.astro';
 import AboutSection from '../components/AboutSection.astro';
 import ServicesSection from '../components/ServicesSection.astro';
 import ContactFooter from '../components/ContactFooter.astro';
+import { getJsonLdPerson, getJsonLdWebsite } from '../lib/seo';
 
 const title = 'Nikko Causapin — Software Engineer & Web Developer';
 const description =
   'Portfolio of Nikko Causapin, a BSIT Business Analytics student building full-stack web apps, internal tools, and data-driven systems.';
 
-const jsonLd = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: 'Nikko Causapin',
-    url: Astro.site?.href ?? 'https://nikkocausapin.vercel.app',
-    image: new URL('/images/profile.webp', Astro.site ?? Astro.url).href,
-    email: 'mailto:nikkocausapin61@gmail.com',
-    jobTitle: 'Software Engineer',
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: 'Batangas',
-      addressCountry: 'PH',
-    },
-    knowsAbout: [
-      'Full-stack development',
-      'Laravel',
-      'Vue',
-      'React',
-      'MySQL',
-      'Business analytics',
-      'Internal tools',
-    ],
-    sameAs: ['https://github.com/niks0501'],
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: 'Nikko Causapin Portfolio',
-    url: Astro.site?.href ?? 'https://nikkocausapin.vercel.app',
-    description,
-  },
-];
+const jsonLd = [getJsonLdPerson(), { ...getJsonLdWebsite(), description }];
 ---
 
 <BaseLayout
