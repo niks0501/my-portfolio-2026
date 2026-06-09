@@ -1,6 +1,8 @@
 ---
 import { Icon } from 'astro-icon/components';
 import { getToolTagClasses } from '../lib/toolStyles';
+import { BADGES } from '../lib/constants';
+import { serializeJsonLd } from '../lib/seo';
 
 const featuredProjects = [
   {
@@ -352,7 +354,282 @@ const currentFocus = [
             </dl>
           </div>
         </div>
+
+        <div class="mt-12">
+          <p
+            class="text-xs font-medium uppercase tracking-[0.18em] text-primary mb-5"
+          >
+            06 — Certifications
+          </p>
+          <div class="glass-card p-5 lg:p-6">
+            <div
+              class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-6"
+            >
+              <div>
+                <h3 class="text-lg font-heading font-semibold text-foreground">
+                  Credentials that support my analytics and systems work.
+                </h3>
+                <p
+                  class="text-sm text-muted-foreground leading-relaxed mt-2 max-w-2xl dark:text-foreground/[0.82]"
+                >
+                  Certifications across data analytics, databases, networking,
+                  Excel, device management, and practical AI workflows.
+                </p>
+              </div>
+              <span
+                class="inline-flex shrink-0 items-center rounded-full border border-primary/20 bg-primary/[0.08] px-3 py-1 text-xs font-medium text-primary dark:border-primary/35 dark:bg-primary/[0.14]"
+              >
+                {BADGES.length} badges
+              </span>
+            </div>
+
+            <div
+              class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-6"
+            >
+              {
+                BADGES.map((badge, index) => (
+                  <button
+                    type="button"
+                    data-badge-index={index}
+                    class="group flex flex-col items-center gap-2 rounded-lg p-3 text-center transition-colors hover:bg-muted/70 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer dark:hover:bg-white/10"
+                    aria-label={`View ${badge.name} badge`}
+                  >
+                    <img
+                      src={badge.src}
+                      alt={badge.name}
+                      width="64"
+                      height="64"
+                      class="w-16 h-16 transition-transform duration-300 group-hover:-translate-y-0.5"
+                      loading="lazy"
+                    />
+                    <span
+                      class="text-sm text-muted-foreground text-center leading-tight cursor-text dark:text-foreground/[0.85]"
+                      set:html={badge.label}
+                    />
+                  </button>
+                ))
+              }
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+  <dialog
+    id="badge-modal"
+    class="backdrop:bg-black/50 rounded-2xl p-6 w-[560px] max-w-[95vw] max-h-[90vh] border border-border bg-background text-foreground overflow-hidden dark:bg-card dark:shadow-2xl"
+    aria-labelledby="modal-title"
+  >
+    <div class="flex justify-end">
+      <form method="dialog">
+        <button
+          type="submit"
+          class="text-muted-foreground hover:text-foreground text-xl leading-none cursor-pointer rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors"
+          aria-label="Close"
+        >
+          &times;
+        </button>
+      </form>
+    </div>
+    <div class="flex flex-col items-center gap-5">
+      <div class="flex items-center justify-center gap-4">
+        <button
+          type="button"
+          data-nav-dir="-1"
+          class="text-muted-foreground hover:text-foreground hover:bg-muted text-3xl shrink-0 cursor-pointer rounded-xl w-12 h-12 flex items-center justify-center transition-colors"
+          aria-label="Previous"
+        >
+          &larr;
+        </button>
+        <div
+          class="flex-1 min-w-0 h-[400px] flex items-center justify-center overflow-hidden"
+        >
+          <img
+            id="modal-img"
+            alt=""
+            class="max-w-full max-h-full object-contain rounded-lg"
+          />
+        </div>
+        <button
+          type="button"
+          data-nav-dir="1"
+          class="text-muted-foreground hover:text-foreground hover:bg-muted text-3xl shrink-0 cursor-pointer rounded-xl w-12 h-12 flex items-center justify-center transition-colors"
+          aria-label="Next"
+        >
+          &rarr;
+        </button>
+      </div>
+      <div class="text-center">
+        <h3 id="modal-title" class="text-lg font-semibold text-foreground"></h3>
+        <p id="modal-category" class="text-sm text-muted-foreground mt-0.5"></p>
+      </div>
+      <div class="flex items-center gap-2">
+        <div id="modal-dots" class="flex gap-1.5"></div>
+        <span id="modal-counter" class="text-xs text-muted-foreground ml-1"
+          >1 / {BADGES.length}</span
+        >
+      </div>
+    </div>
+  </dialog>
 </section>
+
+<style>
+  #badge-modal[open] {
+    animation: modal-in 0.2s ease-out;
+  }
+
+  #badge-modal[open]::backdrop {
+    animation: backdrop-in 0.2s ease-out;
+  }
+
+  @keyframes modal-in {
+    from {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes backdrop-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  #badge-modal {
+    margin: auto;
+  }
+
+  #badge-modal::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
+</style>
+
+<script
+  is:inline
+  id="badge-data"
+  type="application/json"
+  set:html={serializeJsonLd(BADGES)}
+/>
+
+<script>
+  type Badge = {
+    src: string;
+    name: string;
+    category: string;
+  };
+
+  function initBadgeGallery() {
+    let currentIndex = 0;
+    const dialog = document.getElementById('badge-modal');
+    if (dialog?.dataset.badgeGalleryInitialized === 'true') return;
+
+    const dataEl = document.getElementById('badge-data');
+    const badges = dataEl?.textContent
+      ? (JSON.parse(dataEl.textContent) as Badge[])
+      : [];
+    const img = document.getElementById('modal-img');
+    const title = document.getElementById('modal-title');
+    const categoryEl = document.getElementById('modal-category');
+    const counter = document.getElementById('modal-counter');
+    const dots = document.getElementById('modal-dots');
+
+    if (
+      !(dialog instanceof HTMLDialogElement) ||
+      !(img instanceof HTMLImageElement) ||
+      !badges.length
+    )
+      return;
+
+    const badgeDialog = dialog;
+    const modalImg = img;
+    badgeDialog.dataset.badgeGalleryInitialized = 'true';
+
+    function buildDots() {
+      if (!dots) return;
+      dots.innerHTML = '';
+      badges.forEach((_, i) => {
+        const dot = document.createElement('span');
+        dot.className =
+          'w-2 h-2 rounded-full transition-colors ' +
+          (i === currentIndex ? 'bg-primary' : 'bg-border');
+        dots.appendChild(dot);
+      });
+    }
+
+    function updateModal() {
+      const badge = badges[currentIndex];
+      if (!badge) return;
+      modalImg.src = badge.src;
+      modalImg.alt = badge.name;
+      if (title) title.textContent = badge.name;
+      if (categoryEl) categoryEl.textContent = badge.category;
+      if (counter)
+        counter.textContent = currentIndex + 1 + ' / ' + badges.length;
+      const dotEls = dots?.children;
+      if (dotEls) {
+        for (let i = 0; i < dotEls.length; i++) {
+          const dot = dotEls[i];
+          if (!dot) continue;
+          dot.className =
+            'w-2 h-2 rounded-full transition-colors ' +
+            (i === currentIndex ? 'bg-primary' : 'bg-border');
+        }
+      }
+    }
+
+    function show(index: number) {
+      currentIndex = index;
+      updateModal();
+      badgeDialog.showModal();
+    }
+
+    function navigate(dir: number) {
+      currentIndex = (currentIndex + dir + badges.length) % badges.length;
+      updateModal();
+    }
+
+    buildDots();
+
+    document
+      .querySelectorAll<HTMLElement>('[data-badge-index]')
+      .forEach((el) => {
+        el.addEventListener('click', () => {
+          const index = Number(el.dataset.badgeIndex);
+          if (Number.isFinite(index)) show(index);
+        });
+      });
+
+    document.querySelectorAll<HTMLElement>('[data-nav-dir]').forEach((el) => {
+      el.addEventListener('click', () => {
+        const dir = Number(el.dataset.navDir);
+        if (Number.isFinite(dir)) navigate(dir);
+      });
+    });
+
+    badgeDialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') navigate(-1);
+      if (e.key === 'ArrowRight') navigate(1);
+    });
+
+    badgeDialog.addEventListener('click', (e) => {
+      const rect = badgeDialog.getBoundingClientRect();
+      const isOutside =
+        e.clientX < rect.left ||
+        e.clientX > rect.right ||
+        e.clientY < rect.top ||
+        e.clientY > rect.bottom;
+      if (isOutside) badgeDialog.close();
+    });
+  }
+
+  initBadgeGallery();
+  document.addEventListener('astro:after-swap', initBadgeGallery);
+</script>
